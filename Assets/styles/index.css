@@ -1,0 +1,91 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #f5f5f5;
+    color: #333;
+  }
+  
+  .layout {
+    display: flex;
+    min-height: 100vh;
+  }
+  
+  /* Barra lateral */
+  .sidebar {
+    width: 220px;
+    background-color: #ffffff;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.05);
+    padding: 20px;
+    border-right: 1px solid #e1e1e1;
+  }
+  
+  .sidebar h2 {
+    font-size: 18px;
+    margin-bottom: 20px;
+  }
+  
+  .sidebar ul {
+    list-style: none;
+  }
+  
+  .sidebar li {
+    margin: 10px 0;
+  }
+  
+  .sidebar a {
+    text-decoration: none;
+    color: #0078d4;
+    font-weight: 500;
+  }
+  
+  .sidebar a:hover {
+    text-decoration: underline;
+  }
+  
+  /* Contenido principal */
+  .main-content {
+    flex: 1;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  /* Estilo de los módulos */
+  .module {
+    background-color: #fff;
+    border-radius: 6px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  
+  .module-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid #e1e1e1;
+    background-color: #fafafa;
+  }
+  
+  .module-body {
+    padding: 20px;
+  }
+  
+  .module-footer {
+    padding: 16px 20px;
+    border-top: 1px solid #e1e1e1;
+    background-color: #fafafa;
+    font-size: 14px;
+    color: #666;
+  }
+  
+  .module-footer a {
+    color: #0078d4;
+    text-decoration: none;
+  }
+  

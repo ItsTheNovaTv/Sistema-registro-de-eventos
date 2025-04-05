@@ -1,32 +1,53 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="Assets/styles/index.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mi Panel</title>
+  <link rel="stylesheet" href="Assets/styles/index.css">
 </head>
 <body>
-    <head>
-        
-        <img id="logo" src="" alt="img">
-        <nav>
-            <p>Opciones de navegacion1</p>
-            <p>Opciones de navegacion2</p>
-            <p>Opciones de navegacion3</p>
-            <p>Opciones de navegacion4</p>
-        </nav>
-    </head>
+  <div class="layout">
+    <aside class="sidebar">
+      <h2>Mi Cuenta</h2>
+      <nav>
+        <ul>
+          <li><a href="#">Cuenta</a></li>
+          <li><a href="#">Tu información</a></li>
+          <li><a href="#">Suscripciones</a></li>
+          <li><a href="#">Dispositivos</a></li>
+          <li><a href="#">Seguridad</a></li>
+        </ul>
+      </nav>
+    </aside>
 
-    <section>
-        <h1>Listo para trabajar</h1>
-    </section>
-    
-    
-    <footer>
-        <p>info: 0000000000</p>
-    </footer>
+    <main class="main-content">
+      <section class="module">
+        <div class="module-header">
+          <h3>Información general</h3>
+        </div>
+        <div class="module-body">
+          <p><strong>Nombre completo: </strong>Luis Pablo Bustmanate Aguirre</p>
+          <p><strong>Correo: </strong> lpba862@gmail.com</p>
+        </div>
+        <div class="module-footer">
+          <span>Última actualización: 2025</span>
+        </div>
+      </section>
 
-<script src="Assets/Js/index.js"></script>
+      <section class="module">
+        <div class="module-header">
+          <h3>Perfil</h3>
+        </div>
+        <div class="module-body">
+          <p><strong>Fecha de nacimiento: </strong>06/08/2002</p>
+          <p><strong>País: </strong>México</p>
+        </div>
+        <div class="module-footer">
+          <a href="#">Editar información</a> 
+        </div>
+      </section>
+    </main>
+  </div>
 </body>
 </html>
