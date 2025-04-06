@@ -19,7 +19,7 @@
   
   /* Sidebar base (colapsado) */
   .sidebar {
-    width: 40px;
+    width: 60px;
     background-color: #ffffff;
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.05);
     transition: width 0.3s ease;
