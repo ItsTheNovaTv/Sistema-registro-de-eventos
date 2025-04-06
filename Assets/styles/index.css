@@ -1,3 +1,4 @@
+/* Reset y base */
 * {
     margin: 0;
     padding: 0;
@@ -10,23 +11,80 @@
     color: #333;
   }
   
+  /* Layout */
   .layout {
     display: flex;
     min-height: 100vh;
   }
   
-  /* Barra lateral */
+  /* Sidebar base (colapsado) */
   .sidebar {
-    width: 220px;
+    width: 40px;
     background-color: #ffffff;
-    box-shadow: 2px 0 5px rgba(0,0,0,0.05);
-    padding: 20px;
-    border-right: 1px solid #e1e1e1;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.05);
+    transition: width 0.3s ease;
+    overflow: hidden;
+    position: relative;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
   }
   
-  .sidebar h2 {
+  /* Sidebar expandido */
+  .sidebar.active {
+    width: 220px;
+  }
+  
+  /* Header del sidebar con botón y título */
+  .sidebar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px;
+    border-bottom: 1px solid #eee;
+    gap: 10px;
+  }
+  
+  /* Título que aparece al expandir */
+  .sidebar-header h2 {
     font-size: 18px;
-    margin-bottom: 20px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex-grow: 1;
+    flex-shrink: 1;
+    opacity: 0;
+    transform: translateX(-100%);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+  
+  .sidebar.active .sidebar-header h2 {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  
+  /* Botón del menú (hamburguesa) */
+  .menu-toggle {
+    flex-shrink: 0;
+    cursor: pointer;
+  }
+  
+  .menu-toggle img {
+    width: 24px;
+    height: 24px;
+  }
+  
+  /* Contenido del sidebar (navegación) */
+  .sidebar-content {
+    padding: 20px;
+    opacity: 0;
+    transform: translateX(-100%);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+  
+  .sidebar.active .sidebar-content {
+    opacity: 1;
+    transform: translateX(0);
   }
   
   .sidebar ul {
@@ -56,11 +114,11 @@
     gap: 20px;
   }
   
-  /* Estilo de los módulos */
+  /* Módulos estilo tarjeta */
   .module {
     background-color: #fff;
     border-radius: 6px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -87,5 +145,19 @@
   .module-footer a {
     color: #0078d4;
     text-decoration: none;
+  }
+  
+  /* Responsive para móviles (máx 768px) */
+  @media (max-width: 768px) {
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100%;
+    }
+  
+    .main-content {
+      padding: 30px 20px 20px 20px;
+    }
   }
   
