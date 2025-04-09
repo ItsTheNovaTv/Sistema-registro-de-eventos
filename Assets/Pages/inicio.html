@@ -11,7 +11,11 @@
 <body>
 
     <!-- Botón hamburguesa -->
-
+    <header>
+        <div class="header">
+        <img src="https://cdn-icons-png.flaticon.com/512/847/847969.png" alt="Usuario" width="40" height="40">
+        </div>
+    </header>
 
     <div class="layout">
         <aside class="sidebar">
@@ -23,15 +27,15 @@
             </div>
 
             <div class="sidebar-content">
-                <nav>
+           
                     <ul>
-                        <li><a href="#">Cuenta</a></li>
+                        <li><a id="miBoton" href="#">Cuenta</a></li>
                         <li><a href="#">Tu información</a></li>
                         <li><a href="#">Suscripciones</a></li>
                         <li><a href="#">Dispositivos</a></li>
                         <li><a href="#">Seguridad</a></li>
                     </ul>
-                </nav>
+               
             </div>
         </aside>
 
@@ -64,14 +68,6 @@
         </main>
     </div>
 
-    <script>
-        const toggle = document.querySelector('.menu-toggle');
-        const sidebar = document.querySelector('.sidebar');
-
-        toggle.addEventListener('click', () => {
-            sidebar.classList.toggle('active');
-        });
-    </script>
+    <script type="module" src="../Js/Inicio.js"></script>
 </body>
-
 </html>

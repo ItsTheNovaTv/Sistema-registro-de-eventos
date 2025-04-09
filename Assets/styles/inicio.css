@@ -9,8 +9,20 @@
     font-family: 'Segoe UI', sans-serif;
     background-color: #f5f5f5;
     color: #333;
+    min-width: 400px;
   }
   
+  .header{
+    color: white;
+    display: flex;
+    align-items: center;
+    flex-direction: row-reverse;
+    padding-right: 10px;
+    height: 3rem;
+    width: 100%;
+    background-color: #197cc8;
+  }
+
   /* Layout */
   .layout {
     display: flex;
@@ -99,10 +111,14 @@
     text-decoration: none;
     color: #0078d4;
     font-weight: 500;
+    border-radius: 10px;
+    padding: 5px;
+    transition: background-color 0.3s ease;
   }
   
   .sidebar a:hover {
-    text-decoration: underline;
+    background-color: #ececec; ;
+    
   }
   
   /* Contenido principal */
@@ -150,10 +166,10 @@
   /* Responsive para móviles (máx 768px) */
   @media (max-width: 768px) {
     .sidebar {
-      position: fixed;
+     
       top: 0;
       left: 0;
-      height: 100%;
+      height: 100vh;
     }
   
     .main-content {
