@@ -1,5 +1,6 @@
-import { db } from "./Firebase.js";
-import { collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { auth, db } from "./Firebase.js";
+import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("formLogin");
@@ -7,38 +8,35 @@ document.addEventListener("DOMContentLoaded", () => {
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const correoIngresado = document.getElementById("correo").value.trim();
-    const contrasenaIngresada = document.getElementById("contrasena").value.trim();
+    const correo = document.getElementById("correo").value.trim();
+    const contrasena = document.getElementById("contrasena").value.trim();
 
-    const ref = collection(db, "usuarios");
-    const snapshot = await getDocs(ref);
+    try {
+      // Iniciar sesión con Firebase Auth
+      const credenciales = await signInWithEmailAndPassword(auth, correo, contrasena);
+      const user = credenciales.user;
 
-    let usuarioValido = null;
+      // Obtener datos del usuario desde Firestore
+      const refUsuario = doc(db, "usuarios", user.uid);
+      const docSnap = await getDoc(refUsuario);
 
-    snapshot.forEach((doc) => {
-      const data = doc.data();
-      if (data.correo === correoIngresado && data.contraseña === contrasenaIngresada) {
-        usuarioValido = {
-          id: doc.id,
-          nombre: data.nombre,
-          admin: data.admin
-        };
-      }
-    });
+      if (docSnap.exists()) {
+        const datos = docSnap.data();
 
-    if (usuarioValido) {
-        alert(`Bienvenido ${usuarioValido.nombre}`);
-      
-        // Guardar en localStorage solo lo necesario: id y admin
-        localStorage.setItem("usuarioId", usuarioValido.id);
-        localStorage.setItem("esAdmin", usuarioValido.admin); // esto será "true" o "false" como string
-      
-        // Redirigir a la página de inicio
+        // Guardar en sessionStorage
+        sessionStorage.setItem("usuarioId", user.uid);
+        sessionStorage.setItem("esAdmin", datos.admin);
+        sessionStorage.setItem("nombre", datos.nombre);
+
+        alert(`Bienvenido ${datos.nombre}`);
         window.location.href = "../Assets/Pages/Inicio.html";
+      } else {
+        alert("No se encontraron los datos del usuario en Firestore.");
       }
-      
-    else {
-      alert("Correo o contraseña incorrectos");
+
+    } catch (error) {
+      console.error("Error al iniciar sesión:", error);
+      alert("Correo o contraseña incorrectos.");
     }
   });
 });
