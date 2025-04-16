@@ -2,22 +2,6 @@ import { auth } from "./Firebase.js";
 import { signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
 
-//proteccion contra volver atras del navegador
-document.addEventListener("DOMContentLoaded", () => {
-  const usuarioId = sessionStorage.getItem("usuarioId");
-
-  if (!usuarioId) {
-    // No hay sesión activa → redirigir al index
-    window.location.href = "/index.html";
-  }
-});
-
-const toggle = document.querySelector('.menu-toggle');
-const sidebar = document.querySelector('.sidebar');
-
-toggle.addEventListener('click', () => {
-    sidebar.classList.toggle('active');
-});
 
 //Conexion a bdd para boton purbea de imprimir en consola los usuarios
 import { db } from "./Firebase.js"; // ruta relativa desde Inicio.js a Firebase.js
