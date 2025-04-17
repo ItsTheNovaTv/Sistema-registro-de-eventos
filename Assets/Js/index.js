@@ -1,6 +1,7 @@
 import { auth, db } from "./Firebase.js";
 import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import { mostrarToast } from "./toast.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("formLogin");
@@ -28,15 +29,18 @@ document.addEventListener("DOMContentLoaded", () => {
         sessionStorage.setItem("esAdmin", datos.admin);
         sessionStorage.setItem("nombre", datos.nombre);
 
-        alert(`Bienvenido ${datos.nombre}`);
-        window.location.href = "../Assets/Pages/Inicio.html";
-      } else {
-        alert("No se encontraron los datos del usuario en Firestore.");
+        mostrarToast(`Bienvenido ${datos.nombre}`, "success");
+        
+        setTimeout(() => {
+          window.location.href = "../Assets/Pages/Inicio.html";
+        }, 1500)
+        } else {
+        mostrarToast("No se encontraron los datos del usuario en Firestore.", "error");
       }
 
     } catch (error) {
-      console.error("Error al iniciar sesión:", error);
-      alert("Correo o contraseña incorrectos.");
+      console.error("Error al iniciar sesión: ", error);
+      mostrarToast("Correo o contraseña incorrectos.", "error");
     }
   });
 });

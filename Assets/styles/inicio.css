@@ -153,7 +153,9 @@
     overflow: hidden;
     padding: 20px;
     align-items: center;
+    gap: 20px;
   }
+  
 
   .module-header {
     padding: 16px 20px;

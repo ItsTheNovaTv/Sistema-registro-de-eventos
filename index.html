@@ -1,19 +1,24 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="stylesheet" href="Assets/styles/index.css">
+  <link rel="stylesheet" href="Assets/styles/toast.css">
+  <title>Iniciar Sesión</title>
+ 
 </head>
 <body>
-  <form id="formLogin">
-    <input type="email" id="correo" placeholder="Correo" required />
+  <div id="toastContainer"></div>
+  <form class="login-container" id="formLogin">
+    <h2>Iniciar sesión</h2>
+    <input type="email" id="correo" placeholder="Correo electrónico" required />
     <input type="password" id="contrasena" placeholder="Contraseña" required />
-    <button type="submit">Iniciar sesión</button>
+    <button type="submit">Entrar</button>
+    <a href="/index.html">Volver al inicio</a>
   </form>
-  
-  
-  <a href="/Assets/Pages/inicio.html">click</a>
+
   <script type="module" src="Assets/Js/index.js"></script>
+  <script type="module" src="Assets/Js/toast.js"></script>
 </body>
 </html>
