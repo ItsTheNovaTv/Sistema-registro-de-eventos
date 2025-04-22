@@ -38,37 +38,31 @@
         </aside>
 
         <main class="main-content">
-            <h1>Usuarios</h1>
+            <h1>Equipos</h1>
+          
             <section class="small-module">
-                <p><strong>Filtros </strong> 
-                    <select name="usuarios-combobox" id="usuarios-combobox">
-                        <option value="Admin">Solo Admin</option>
-                        <option value="Usuario">Solo Usuario</option>
-            
-                    
-                    </select>
-                    <input type="search" placeholder="Busqueda... ">
-                    <button id="btnUsuariosFiltro">Buscar</button>
-                    
-                </p>
+              <p><strong>Filtros </strong> 
+                <select name="año-combobox" id="año-combobox">
+                  <option value="">Selecciona año</option>
+                </select>
+                <select name="evento-combobox" id="evento-combobox">
+                  <option value="">Selecciona evento</option>
+                </select>
+                <select name="modalidad-combobox" id="modalidad-combobox">
+                  <option value="">Selecciona modalidad</option>
+                </select>
+                <input type="search" placeholder="Busqueda... ">
+                <button id="btnUsuariosFiltro">Buscar</button>
+              </p>
             </section>
-            <section class="module">
-                <div class="module-header">
-                    <h3>Información general</h3>
-                </div>
-                <div class="module-body">
-                    <p><strong>Nombre completo: </strong>Luis Pablo Bustamante Aguirre</p>
-                    <p><strong>Correo: </strong>lpba862@gmail.com</p>
-                    <p><strong>Admin: </strong>Si</p>
-                </div>
-                <div class="module-footer">
-                    <span>Última actualización: 2025</span>
-                </div>
-
-            </section>
-        </main>
+          
+            <!-- Aquí se llenarán dinámicamente las tarjetas -->
+            <section id="contenedor-equipos" class="module-body"></section>
+          </main>
     </div>
     <script type="module" src="../Js/sidebarToggle.js"></script>
     <script type="module" src="../Js/cerrarSesion.js"></script>
+    <script type="module" src="../Js/equipos.js"></script>
+
 </body>
 </html>
