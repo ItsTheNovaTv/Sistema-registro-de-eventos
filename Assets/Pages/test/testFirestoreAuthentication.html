@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Prueba de Autenticación</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    input, button { margin: 5px 0; padding: 8px; display: block; }
+  </style>
+</head>
+<body>
+
+  <h1>Prueba de Firebase Auth + Firestore</h1>
+
+  <h2>Iniciar Sesión</h2>
+  <form id="formLogin">
+    <input type="email" id="correo" placeholder="Correo" required />
+    <input type="password" id="contrasena" placeholder="Contraseña" required />
+    <button type="submit">Iniciar sesión</button>
+  </form>
+
+  <button id="btnUsuarios">Ver usuarios</button>
+
+  <script type="module">
+    import { auth, db } from "../Js/Firebase.js";
+    import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    const form = document.getElementById("formLogin");
+    const btnUsuarios = document.getElementById("btnUsuarios");
+
+    let usuarioActual = null;
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const correo = document.getElementById("correo").value.trim();
+      const contrasena = document.getElementById("contrasena").value.trim();
+
+      try {
+        const credenciales = await signInWithEmailAndPassword(auth, correo, contrasena);
+        usuarioActual = credenciales.user;
+        alert("✅ Sesión iniciada correctamente");
+      } catch (error) {
+        console.error("❌ Error al iniciar sesión:", error);
+        alert("Credenciales incorrectas o usuario no existe.");
+      }
+    });
+
+    btnUsuarios.addEventListener("click", async () => {
+      if (!auth.currentUser) {
+        alert("⚠️ Debes iniciar sesión para ver usuarios.");
+        return;
+      }
+
+      try {
+        const ref = collection(db, "usuarios");
+        const snapshot = await getDocs(ref);
+        const usuarios = snapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }));
+        console.log("📋 Usuarios:", usuarios);
+        alert("Consulta realizada. Revisa la consola (F12)");
+      } catch (error) {
+        console.error("❌ Error al obtener usuarios:", error);
+        alert("No se pudo obtener la lista de usuarios.");
+      }
+    });
+  </script>
+</body>
+</html>
