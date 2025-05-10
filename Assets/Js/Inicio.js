@@ -1,4 +1,4 @@
-import { auth } from "./Firebase.js";
+import { auth } from "./components/Firebase.js";
 import { signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 //Conexion a bdd para poder obtener datos de la bdd
 

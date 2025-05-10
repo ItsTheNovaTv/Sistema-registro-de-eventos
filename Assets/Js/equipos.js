@@ -3,7 +3,7 @@ import {
   obtenerEventos,
   obtenerModalidades,
   obtenerEquipos
-} from "./consultas.js";
+} from "./components/consultas.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
   const añoSelect = document.getElementById("año-combobox");

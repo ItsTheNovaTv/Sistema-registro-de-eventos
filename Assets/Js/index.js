@@ -1,7 +1,7 @@
-import { auth, db } from "./Firebase.js";
+import { auth, db } from "./components/Firebase.js";
 import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-import { mostrarToast } from "./toast.js";
+import { mostrarToast } from "./components/toast.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("formLogin");
