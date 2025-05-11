@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mi Panel</title>
     <link rel="stylesheet" href="/Assets/styles/inicio.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 </head>
 
 <body>
@@ -40,7 +42,32 @@
         </aside>
 
         <main class="main-content">
-            <h1>Panel de Control</h1>
+
+                <section id="dashboard" class="dashboard">
+                    <h2>Resumen del Sistema</h2>
+                    <div class="stats">
+                        <div class="stat-box">
+                        <strong id="total-equipos">0</strong>
+                        <span>Equipos registrados</span>
+                        </div>
+                        <div class="stat-box">
+                        <strong id="total-modalidades">0</strong>
+                        <span>Modalidades activas</span>
+                        </div>
+                        <div class="stat-box">
+                        <strong id="total-eventos">0</strong>
+                        <span>Eventos disponibles</span>
+                        </div>
+                    </div>
+                </section>
+
+                <div class="grafica-dashboard">
+                    <h3>Modalidades con más equipos</h3>
+                    <canvas id="graficaModalidades" width="400" height="200"></canvas>
+                </div>
+
+
+
             <section class="module">
                 <div class="module-header">
                     <h3>Información general</h3>
@@ -54,31 +81,7 @@
                     <span>Última actualización: 2025</span>
                 </div>
             </section>
-            <section class="content">
-                <div class="module" >
-                    <div class="module-header">
-                        <h3>Equipo{numeroEquipo}: robotectim</h3>
-                    </div>
-                    <div class="module-body"> 
-                        <p><strong>Institucion: </strong>ITSPP</p>
-                        <p><strong>Nivel de participacion: </strong>Universidad</p>
-                        <p><strong>Asesor: </strong>José María Gerónimo Pérez </p>
-                        <p><strong>Integrante 1: </strong>Luis Pablo Bustamante Aguirre</p>
-                        <p><strong>Integrante 2: </strong>Brandon Jesús Rodríguez Morales</p>
-                        <p><strong>Integrante 3: </strong>Zugey Lizbeth Gutiérrez García</p>
-                        <p><strong>Integrante 4: </strong>Dania Guadalupe Castillo Ramírez</p>
-                        <p><strong>Contracto: </strong>(+52) 638-110-2668</p>
-
-                    </div>
-                    <div class="module-footer">
-                        <span>Última actualización: 2025</span>
-                    </div>
-                </div>
-            </section>
-
-
-
-
+            
             <section class="module">
                 <div class="module-header">
                     <h3>Perfil</h3>
@@ -94,9 +97,10 @@
         </main>
     </div>
 
-    <script type="module" src="../Js/Inicio.js"></script>
+    
     <script type="module" src="../Js/components/sidebarToggle.js"></script>
     <script type="module" src="../Js/components/proteccionSesion.js"></script>
     <script type="module" src="../Js/components/consultas.js"></script>
+    <script type="module" src="../Js/Inicio.js"></script>
 </body>
 </html>

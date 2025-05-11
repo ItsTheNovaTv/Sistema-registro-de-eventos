@@ -2,6 +2,9 @@ import { auth } from "./components/Firebase.js";
 import { signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 //Conexion a bdd para poder obtener datos de la bdd
 
+import { obtenerEventos, obtenerModalidades, obtenerEquipos } from './components/consultas.js';
+
+
 //Para cerrar sesion
 document.addEventListener("DOMContentLoaded", () => {
   const btnCerrarSesion = document.getElementById("cerrarSesionBtn");
@@ -27,15 +30,86 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-//Test
+document.addEventListener('DOMContentLoaded', () => {
+  const añoActual = new Date().getFullYear();
+  cargarResumenDashboard(`${añoActual}`);
+});
+async function cargarResumenDashboard(año) {
+  try {
+    const eventos = await obtenerEventos(año);
+    let totalEquipos = 0;
+    let totalModalidades = 0;
 
-document.addEventListener("DOMContentLoaded", () => {
-  const btn = document.getElementById("miBoton");
-  if (btn) {
-    btn.addEventListener("click", (e) => {
-      e.preventDefault();
-      obtenerUsuarios();
-      obtenerEquipos("2025", "programacion", "estructuras complejas");
-    });
+    const modalidadesContador = {};
+
+    for (const evento of eventos) {
+      const modalidades = await obtenerModalidades(año, evento);
+      totalModalidades += modalidades.length;
+
+      for (const modalidad of modalidades) {
+        const equipos = await obtenerEquipos(año, evento, modalidad);
+        totalEquipos += equipos.length;
+
+        const clave = `${evento.toUpperCase()} - ${modalidad}`;
+        modalidadesContador[clave] = (modalidadesContador[clave] || 0) + equipos.length;
+      }
+    }
+
+    // Actualizar contadores
+    document.getElementById("total-equipos").textContent = totalEquipos;
+    document.getElementById("total-modalidades").textContent = totalModalidades;
+    document.getElementById("total-eventos").textContent = eventos.length;
+
+    // Crear gráfica
+    generarGraficaModalidades(modalidadesContador);
+
+  } catch (error) {
+    console.error("❌ Error cargando dashboard:", error);
+  }
+}
+
+
+function generarGraficaModalidades(data) {
+  const canvas = document.getElementById('graficaModalidades');
+  if (!canvas) {
+    console.warn("⚠️ No se encontró el canvas para la gráfica.");
+    return;
+  }
+
+  const ctx = canvas.getContext('2d');
+
+  // ✅ Destruir gráfica anterior si ya existe
+  if (window.graficaModalidadesInstance instanceof Chart) {
+    window.graficaModalidadesInstance.destroy();
+  }
+
+  // 🎯 Crear nueva instancia
+  window.graficaModalidadesInstance = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: Object.keys(data),
+      datasets: [{
+        label: 'Cantidad de Equipos',
+        data: Object.values(data),
+        backgroundColor: 'rgba(25, 124, 200, 0.6)',
+        borderColor: 'rgba(25, 124, 200, 1)',
+        borderWidth: 1
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: { precision: 0}
+        }
+      }
+    }
+  });
+}
+window.addEventListener('resize', () => {
+  if (window.graficaModalidadesInstance) {
+    window.graficaModalidadesInstance.resize();
   }
 });

@@ -109,8 +109,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       tarjeta.innerHTML = `
         <div class="module-header">
-          <h3>ID: ${eq.id}</h3>
-          <h3>${eq.Nombre || "Sin nombre"}</h3>
+          <h3>Equipo: ${eq.id}</h3>
+          <p><strong>Evento:</strong> ${eventoSelect.value}</p>
+          <p><strong>Modalidad:</strong> ${modalidadSelect.value}</p>
+          
         </div>
         <div class="module-body">
           <p><strong>Institución:</strong> ${eq.Institucion || "No registrada"}</p>
