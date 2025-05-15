@@ -1,3 +1,4 @@
+
 import { db } from './components/Firebase.js';
 import { doc, setDoc, getDoc } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
 
@@ -11,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
   btnAgregarCampo.addEventListener('click', () => {
     const campoDiv = document.createElement('div');
     campoDiv.classList.add('campo-dinamico');
-    campoDiv.style.marginBottom = '1rem';
+    campoDiv.style.marginBottom = '1.5rem';
 
     campoDiv.innerHTML = `
       <label>Nombre del campo:</label>
@@ -20,25 +21,24 @@ document.addEventListener('DOMContentLoaded', () => {
       <label>Tipo de campo:</label>
       <select name="campo_tipo_${contador}" class="input campo-tipo">
         <option value="text">Texto</option>
-        <option value="array">Lista de texto</option>
         <option value="select">Lista desplegable</option>
         <option value="boolean">Sí / No</option>
+        <option value="lista">Lista (cantidad fija de valores)</option>
       </select>
 
       <label>¿Es requerido?</label>
       <input type="checkbox" name="campo_requerido_${contador}" />
 
-      <div class="opciones-select" style="display: none; margin-top: 0.5rem;">
-        <label>Opciones (una por línea):</label>
-        <textarea name="campo_opciones_${contador}" rows="2" class="input"></textarea>
+      <div class="opciones-select" style="display: none; margin-top: 1rem; margin-bottom: 1rem; margin-left: 3rem;">
+        <label>Opciones para seleccionar:</label>
+        <div class="opciones-dinamicas" style="display: flex; flex-direction:column;  align-items: left; justify-content: center;margin-bottom: 1rem; gap: 10px;"></div>
+        <button type="button" class="boton-secundario agregar-opcion">+ Agregar opción</button>
+        <button type="button" class="boton-secundario eliminar-opcion">− Eliminar opción</button>
       </div>
 
-      <div class="lista-multiple" style="display: none; margin-top: 0.5rem;">
-        <label>Valores por defecto (opcional):</label>
-        <div class="items-lista">
-          <input type="text" class="input item-array" placeholder="Valor 1" />
-        </div>
-        <button type="button" class="boton-secundario agregar-item-array" style="margin-top: 0.5rem;">+ Agregar otro</button>
+      <div class="cantidad-lista" style="display: none; margin-top: 1rem;">
+        <label>Cantidad esperada:</label>
+        <input type="number" name="campo_cantidad_${contador}" class="input" min="1" value="1">
       </div>
 
       <hr />
@@ -46,21 +46,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const tipoSelect = campoDiv.querySelector(`select[name="campo_tipo_${contador}"]`);
     const opcionesDiv = campoDiv.querySelector('.opciones-select');
-    const listaDiv = campoDiv.querySelector('.lista-multiple');
-    const itemsContainer = campoDiv.querySelector('.items-lista');
-    const btnAgregarItem = campoDiv.querySelector('.agregar-item-array');
+    const cantidadDiv = campoDiv.querySelector('.cantidad-lista');
+    const contenedorOpciones = campoDiv.querySelector('.opciones-dinamicas');
+    const btnAgregarOpcion = campoDiv.querySelector('.agregar-opcion');
+    const btnEliminarOpcion = campoDiv.querySelector('.eliminar-opcion');
 
     tipoSelect.addEventListener('change', () => {
       opcionesDiv.style.display = tipoSelect.value === 'select' ? 'block' : 'none';
-      listaDiv.style.display = tipoSelect.value === 'array' ? 'block' : 'none';
+      cantidadDiv.style.display = tipoSelect.value === 'lista' ? 'block' : 'none';
     });
 
-    btnAgregarItem.addEventListener('click', () => {
+    btnAgregarOpcion.addEventListener('click', () => {
       const input = document.createElement('input');
       input.type = 'text';
-      input.className = 'input item-array';
-      input.placeholder = 'Otro valor';
-      itemsContainer.appendChild(input);
+      input.className = 'input opcion-select';
+      input.placeholder = 'Nueva opción';
+      contenedorOpciones.appendChild(input);
+    });
+
+    btnEliminarOpcion.addEventListener('click', () => {
+      const inputs = contenedorOpciones.querySelectorAll('.opcion-select');
+      if (inputs.length > 0) {
+        inputs[inputs.length - 1].remove();
+      }
     });
 
     contenedorCampos.appendChild(campoDiv);
@@ -86,14 +94,23 @@ document.addEventListener('DOMContentLoaded', () => {
       const campo = { nombre, tipo, requerido };
 
       if (tipo === 'select') {
-        const opcionesTexto = formulario[`campo_opciones_${i}`]?.value || '';
-        campo.opciones = opcionesTexto.split('\n').map(opt => opt.trim()).filter(opt => opt !== '');
+        const campoDiv = formulario.querySelectorAll('.campo-dinamico')[i];
+        const inputs = campoDiv.querySelectorAll('.opcion-select');
+        const opciones = Array.from(inputs).map(inp => inp.value.trim()).filter(val => val !== '');
+        if (opciones.length === 0) {
+          alert(`⚠️ El campo "${nombre}" necesita al menos una opción válida.`);
+          return;
+        }
+        campo.opciones = opciones;
       }
 
-      if (tipo === 'array') {
-        const parentDiv = formulario.querySelectorAll('.campo-dinamico')[i];
-        const items = parentDiv.querySelectorAll('.item-array');
-        campo.opciones = Array.from(items).map(inp => inp.value.trim()).filter(val => val !== '');
+      if (tipo === 'lista') {
+        const cantidad = parseInt(formulario[`campo_cantidad_${i}`]?.value);
+        if (isNaN(cantidad) || cantidad < 1) {
+          alert(`⚠️ El campo "${nombre}" debe tener una cantidad válida mayor a 0.`);
+          return;
+        }
+        campo.cantidad = cantidad;
       }
 
       campos.push(campo);
@@ -104,7 +121,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const existente = await getDoc(docRef);
 
     if (existente.exists()) {
-      const confirmar = confirm("⚠️ Esta modalidad ya existe en este evento. ¿Deseas sobrescribir la configuración?");
+      const confirmar = confirm("⚠️ Esta modalidad ya tiene una configuración. ¿Deseas sobrescribirla?");
       if (!confirmar) {
         alert("❌ Operación cancelada.");
         return;
@@ -124,7 +141,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     await setDoc(docRef, { campos });
 
-    alert('✅ Evento y configuración guardados correctamente.');
+    alert('✅ Configuración guardada correctamente.');
     formulario.reset();
     contenedorCampos.innerHTML = '';
     contador = 0;
