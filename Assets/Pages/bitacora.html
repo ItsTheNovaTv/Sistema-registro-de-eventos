@@ -7,6 +7,7 @@
     <title>Bitacora</title>
     <link rel="stylesheet" href="/Assets/styles/inicio.css">
     <link rel="stylesheet" href="/Assets/styles/usuarios.css">
+    <link rel="stylesheet" href="/Assets/styles/bitacora.css">
 </head>
 
 <body>
@@ -30,17 +31,39 @@
                 <ul>
                     <li><a href="inicio.html">Inicio</a></li>
                     <li><a href="registro.html">Registro</a></li>
+                    <li><a href="equipos.html">Equipos</a></li>
                     <li><a href="usuarios.html">Usuarios</a></li>
                     <li><a href="bitacora.html">Bitacora</a></li
-
-
                 </ul>
             </div>
         </aside>
 
         <main class="main-content">
+  <h1>Registro de Bitácora</h1>
 
-        </main>
+  <div class="bitacora-card">
+    <table class="bitacora-table">
+      <thead>
+        <tr>
+          <th>Fecha</th>
+          <th>Usuario</th>
+          <th>Acción</th>
+          <th>Detalles</th>
+        </tr>
+      </thead>
+      <tbody id="tabla-bitacora">
+        <tr>
+          <td data-label="Fecha">2025-05-14</td>
+          <td data-label="Usuario">admin@example.com</td>
+          <td data-label="Acción">Registro</td>
+          <td data-label="Detalles">Se registró un nuevo equipo</td>
+        </tr>
+        <!-- Más filas dinámicas -->
+      </tbody>
+    </table>
+  </div>
+</main>
+
 
         <script type="module" src="../Js/components/sidebarToggle.js"></script>
         <script type="module" src="../Js/components/cerrarSesion.js"></script>
