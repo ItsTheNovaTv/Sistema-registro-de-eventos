@@ -1,0 +1,54 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Registro de Usuario</title>
+  <link rel="stylesheet" href="/Assets/styles/inicio.css" />
+   <link rel="stylesheet" href="/Assets/styles/usuarios.css">
+</head>
+
+<body>
+  <header id="header"></header>
+  <!-- Botón hamburguesa -->    
+  <div class="layout">
+    <aside id="sidebar"></aside>
+    
+    <div>
+      <main class="main-content">
+        <h2 style="margin-bottom: 1.5rem; color: #197cc8;">Registrar nuevo usuario</h2>
+
+        <div class="stat-box">
+          <form id="formRegistroUsuario">
+            <label>Correo electrónico:</label>
+            <input type="email" name="correo" class="input" required />
+
+            <label>Contraseña:</label>
+            <input type="password" name="password" class="input" required />
+
+            <label>Nombre completo:</label>
+            <input type="text" name="nombre" class="input" required />
+
+            <label>¿Es administrador?</label>
+            <input type="checkbox" name="admin" />
+
+            <div style="margin-top: 2rem;">
+              <button type="submit" class="boton-principal">Registrar</button>
+            </div>
+          </form>
+        </div>
+
+            <h2 style="margin-bottom: 1.5rem; color: #197cc8;">Usuarios registrados</h2>
+            <div id="contenedorUsuarios" class="contenedor-usuarios"></div>
+
+      </main>
+    </div>
+
+    
+  
+  <script type="module" src="../Pages/components/loadComponentes.js"></script>
+  <script type="module" src="../Js/registroUsuario.js"></script>
+      <script type="module" src="../Js/components/cargarUsuarios.js"></script>
+</body>
+</html>

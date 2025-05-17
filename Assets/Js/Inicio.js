@@ -29,7 +29,9 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 });
-
+/*
+// Para cargar el dashboard al iniciar la página
+// Se obtiene el año actual y se carga el resumen del dashboard
 document.addEventListener('DOMContentLoaded', () => {
   const añoActual = new Date().getFullYear();
   cargarResumenDashboard(`${añoActual}`);
@@ -112,4 +114,4 @@ window.addEventListener('resize', () => {
   if (window.graficaModalidadesInstance) {
     window.graficaModalidadesInstance.resize();
   }
-});
+});*/

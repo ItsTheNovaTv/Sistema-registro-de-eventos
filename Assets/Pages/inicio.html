@@ -13,93 +13,73 @@
 <body>
 
     <!-- Botón hamburguesa -->
-    <header>
-        <div class="header">
-        <a id= "cerrarSesionBtn" href="#">Cerrar Sesion</a>
-        <img src="https://cdn-icons-png.flaticon.com/512/847/847969.png" alt="Usuario" width="40" height="40">
-        </div>
-    </header>
+    <header id="header"></header>
+    <div class="layout">   
+        <aside id="sidebar"></aside>
 
-    <div class="layout">
-        <aside class="sidebar">
-            <div class="sidebar-header">
-                <h2>Mi Cuenta</h2>
-                <div class="menu-toggle">
-                    <img src="https://cdn-icons-png.flaticon.com/512/1828/1828859.png" alt="Menú">
-                </div>
-            </div>
 
-            <div class="sidebar-content">
-                    <ul>
-                    <li><a href="inicio.html">Inicio</a></li>
-                    <li><a href="registro.html">Registro</a></li>
-                    <li><a href="equipos.html">Equipos</a></li>
-                    <li><a href="usuarios.html">Usuarios</a></li>
-                    <li><a href="bitacora.html">Bitacora</a></li
-                    </ul>
-            </div>
-        </aside>
+            <main class="main-content">
 
-        <main class="main-content">
-
-                <section id="dashboard" class="dashboard">
-                    <h2>Resumen del Sistema</h2>
-                    <div class="stats">
-                        <div class="stat-box">
-                        <strong id="total-equipos">0</strong>
-                        <span>Equipos registrados</span>
+                    <section id="dashboard" class="dashboard">
+                        <h2>Resumen del Sistema</h2>
+                        <div class="stats">
+                            <div class="stat-box">
+                            <strong id="total-equipos">0</strong>
+                            <span>Equipos registrados</span>
+                            </div>
+                            <div class="stat-box">
+                            <strong id="total-eventos">0</strong>
+                            <span>Eventos disponibles</span>
+                            </div>
+                            <div class="stat-box">
+                            <strong id="total-modalidades">0</strong>
+                            <span>Modalidades activas</span>
+                            </div>
+                            
                         </div>
-                        <div class="stat-box">
-                        <strong id="total-modalidades">0</strong>
-                        <span>Modalidades activas</span>
-                        </div>
-                        <div class="stat-box">
-                        <strong id="total-eventos">0</strong>
-                        <span>Eventos disponibles</span>
-                        </div>
+                    </section>
+
+                    <div class="grafica-dashboard">
+                        <h3>Modalidades con más equipos</h3>
+                        <canvas id="graficaModalidades" width="400" height="200"></canvas>
+                    </div>
+
+
+
+                <section class="module">
+                    <div class="module-header">
+                        <h3>Información general</h3>
+                    </div>
+                    <div class="module-body">
+                        <p><strong>Nombre completo: </strong>Luis Pablo Bustamante Aguirre</p>
+                        <p><strong>Correo: </strong>lpba862@gmail.com</p>
+                        <p><strong>Carrera: </strong>Ing. en Sistemas Computacionales</p>
+                    </div>
+                    <div class="module-footer">
+                        <span>Última actualización: 2025</span>
                     </div>
                 </section>
-
-                <div class="grafica-dashboard">
-                    <h3>Modalidades con más equipos</h3>
-                    <canvas id="graficaModalidades" width="400" height="200"></canvas>
-                </div>
-
-
-
-            <section class="module">
-                <div class="module-header">
-                    <h3>Información general</h3>
-                </div>
-                <div class="module-body">
-                    <p><strong>Nombre completo: </strong>Luis Pablo Bustamante Aguirre</p>
-                    <p><strong>Correo: </strong>lpba862@gmail.com</p>
-                    <p><strong>Carrera: </strong>Ing. en Sistemas Computacionales</p>
-                </div>
-                <div class="module-footer">
-                    <span>Última actualización: 2025</span>
-                </div>
-            </section>
-            
-            <section class="module">
-                <div class="module-header">
-                    <h3>Perfil</h3>
-                </div>
-                <div class="module-body">
-                    <p><strong>Fecha de nacimiento: </strong>06/08/2002</p>
-                    <p><strong>País: </strong>México</p>
-                </div>
-                <div class="module-footer">
-                    <a href="#">Editar información</a>
-                </div>
-            </section>
-        </main>
+                
+                <section class="module">
+                    <div class="module-header">
+                        <h3>Perfil</h3>
+                    </div>
+                    <div class="module-body">
+                        <p><strong>Fecha de nacimiento: </strong>06/08/2002</p>
+                        <p><strong>País: </strong>México</p>
+                    </div>
+                    <div class="module-footer">
+                        <a href="#">Editar información</a>
+                    </div>
+                </section>
+            </main>
     </div>
-
-    
-    <script type="module" src="../Js/components/sidebarToggle.js"></script>
+ 
     <script type="module" src="../Js/components/proteccionSesion.js"></script>
-    <script type="module" src="../Js/components/consultas.js"></script>
+    <script type="module" src="../Js/components/sidebarToggle.js"></script>
+    <script type="module" src="../Js/components/consultas.js"></script> 
     <script type="module" src="../Js/Inicio.js"></script>
+    <script type="module" src="./components/loadComponentes.js"></script>
+
 </body>
 </html>

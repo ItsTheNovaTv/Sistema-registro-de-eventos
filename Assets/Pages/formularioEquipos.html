@@ -1,0 +1,45 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registro de Participante</title>
+  <link rel="stylesheet" href="../styles/inicio.css">
+</head>
+<body>
+  <header id="header"></header>
+  <div class="layout">
+    <aside id="sidebar"></aside>
+
+    <main class="main-content">
+      <h2 style="margin-bottom: 1.5rem; color: #197cc8;">Registro de equipo</h2>
+
+      <div class="module">
+        <div class="module-body">
+          <form id="formSeleccion" style="margin-bottom: 2rem;">
+            <label for="anio">Año del evento:</label>
+            <select id="anio" name="anio" class="input" required></select>
+
+            <label for="evento">Evento:</label>
+            <select id="evento" name="evento" class="input" required></select>
+
+            <label for="modalidad">Modalidad:</label>
+            <select id="modalidad" name="modalidad" class="input" required></select>
+
+            <button type="submit" class="boton-principal" style="margin-top: 1rem;">Cargar formulario</button>
+          </form>
+
+          <form id="formDinamico" style="display: none;">
+            <div id="contenedorCamposDinamicos"></div>
+            <button type="submit" class="boton-principal" style="margin-top: 2rem;">Registrar Equipo</button>
+          </form>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script type="module" src="./components/loadComponentes.js"></script>
+  <script type="module" src="../Js/formularioEquipos.js"></script>
+</body>
+</html>

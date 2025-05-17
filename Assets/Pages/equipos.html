@@ -10,32 +10,10 @@
 </head>
 
 <body>
-  <header>
-    <div class="header">
-      <a id="cerrarSesionBtn" href="#">Cerrar Sesion</a>
-      <img src="https://cdn-icons-png.flaticon.com/512/847/847969.png" alt="Usuario" width="40" height="40">
-    </div>
-  </header>
+    <header id="header"></header>
+  <div class="layout">   
+        <aside id="sidebar"></aside>
 
-  <div class="layout">
-    <aside class="sidebar">
-      <div class="sidebar-header">
-        <h2>Mi Cuenta</h2>
-        <div class="menu-toggle">
-          <img src="https://cdn-icons-png.flaticon.com/512/1828/1828859.png" alt="Menú">
-        </div>
-      </div>
-
-      <div class="sidebar-content">
-        <ul>
-          <li><a href="inicio.html">Inicio</a></li>
-                    <li><a href="registro.html">Registro</a></li>
-                    <li><a href="equipos.html">Equipos</a></li>
-                    <li><a href="usuarios.html">Usuarios</a></li>
-                    <li><a href="bitacora.html">Bitacora</a></li
-        </ul>
-      </div>
-    </aside>
 
     <main class="main-content">
       <h1>Equipos</h1>
@@ -52,10 +30,7 @@
           <select name="modalidad-combobox" id="modalidad-combobox">
             <option value="">Selecciona modalidad</option>
           </select>
-          <select name="categoria-combobox" id="categoria-combobox">
-            <option value="">Selecciona categoria</option>
-          </select>
-          <input type="search" placeholder="Busqueda... ">
+
           <button id="btnUsuariosFiltro">Buscar</button>
         </p>
       </section>
@@ -110,6 +85,8 @@
   </div>
 </div>
 
+<script type="module" src="components/loadComponentes.js"></script>
+    <script type="module" src="../Js/components/proteccionSesion.js"></script>
 
 </body>
 
