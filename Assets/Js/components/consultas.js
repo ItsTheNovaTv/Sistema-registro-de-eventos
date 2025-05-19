@@ -49,3 +49,56 @@ export async function obtenerEquipos(año, evento, modalidad) {
     ...doc.data()
   }));
 }
+
+
+//
+if (location.pathname.includes("reportes.html")) {
+  import("https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js").then(({ jsPDF }) => {
+    window.jspdf = { jsPDF }; // Exponerlo globalmente
+  });
+
+  import("https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js");
+
+  document.addEventListener("DOMContentLoaded", async () => {
+    const año = "2025";
+    const evento = "programacion";
+    const modalidad = "estructuras complejas";
+
+    const equipos = await obtenerEquipos(año, evento, modalidad);
+    const tbody = document.getElementById("tabla-equipos");
+
+    equipos.forEach(equipo => {
+      const fila = document.createElement("tr");
+      fila.innerHTML = `
+        <td>${equipo.nombre || 'Sin nombre'}</td>
+        <td>${equipo.institucion || 'N/A'}</td>
+        <td>${equipo.asesor || 'N/A'}</td>
+        <td>
+          ${equipo['integrante 1'] || ''},
+          ${equipo['integrante 2'] || ''},
+          ${equipo['integrante 3'] || ''},
+          ${equipo['integrante 4'] || ''}
+        </td>
+      `;
+      tbody.appendChild(fila);
+    });
+
+    // Generar PDF
+    window.generarPDF = async function () {
+      const doc = new window.jspdf.jsPDF();
+      const elemento = document.getElementById('contenido-pdf');
+
+      await html2canvas(elemento).then(canvas => {
+        const imgData = canvas.toDataURL('image/png');
+        const pdfWidth = doc.internal.pageSize.getWidth();
+        const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+
+        doc.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+
+        const blob = doc.output('blob');
+        const url = URL.createObjectURL(blob);
+        document.getElementById('visorPDF').src = url;
+      });
+    };
+  });
+}

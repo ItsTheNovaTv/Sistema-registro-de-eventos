@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Reporte de Equipos</title>
+
+    <link rel="stylesheet" href="/Assets/styles/inicio.css" />
+    <link rel="stylesheet" href="/Assets/styles/usuarios.css" />
+    <link rel="stylesheet" href="/Assets/styles/reportes.css" />
+
+    <!-- Librerías PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <!-- Librería de íconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+
+
+<body>
+
+    <header id="header"></header>
+
+    <div class="layout">
+        <aside id="sidebar"></aside>
+
+        <main class="main-content">
+            <h1>Reporte de Equipos</h1>
+
+            <div style="display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 25px;">
+                <!-- Tarjeta de filtros -->
+                <div class="usuario-card" style="flex: 1 1 300px;">
+                    <h1>FILTROS</h1>
+                    <select name="año-combobox" id="año-combobox">
+                        <option value="">Selecciona año</option>
+                    </select>
+                    <select name="evento-combobox" id="evento-combobox">
+                        <option value="">Selecciona Evento</option>
+                    </select>
+                    <select name="modalidad-combobox" id="modalidad-combobox">
+                        <option value="">Selecciona Modalidad</option>
+                    </select>
+                    <button onclick="buscarEquipos()" id="btnUsuariosFiltro" style="margin-top: 20px;">Buscar</button>
+                </div>
+
+                <!-- Tarjeta de botones -->
+                <div class="usuario-card"
+                    style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; width: 180px;">
+                    <button id="btnDescargarPDF" class="btn-icon" style="padding: 8px 14px; font-size: 13px;">
+                        <i class="fas fa-file-pdf"></i> PDF
+                    </button>
+                    <button id="btnDescargarExcel" class="btn-icon" style="padding: 8px 14px; font-size: 13px;">
+                        <i class="fas fa-file-excel"></i> Excel
+                    </button>
+                </div>
+            </div>
+
+
+
+
+            <!-- IFRAME DENTRO DE UNA TARJETA -->
+            <div class="usuario-card" style="margin-top: 25px;">
+                <h3 style="margin-top: 0;">Previsualización del PDF</h3>
+                <iframe id="visorPDF" width="100%" height="600px"
+                    style="border: 1px solid #ccc; border-radius: 8px;"></iframe>
+            </div>
+        </main>
+    </div>
+
+    <!-- SCRIPTS -->
+    <script type="module" src="/Assets/Js/components/proteccionSesion.js"></script>
+    <script type="module" src="/Assets/Js/components/sidebarToggle.js"></script>
+    <script type="module" src="/Assets/Js/components/consultas.js"></script>
+    <script type="module" src="/Assets/Pages/components/loadComponentes.js"></script>
+</body>
+
+</html>
