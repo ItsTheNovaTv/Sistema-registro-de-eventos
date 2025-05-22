@@ -138,6 +138,15 @@ document.addEventListener('DOMContentLoaded', () => {
         creado_por: sessionStorage.getItem("usuarioId") || "admin"
       });
     }
+    // Crear documento de modalidad con campo activo: true
+    const modalidadRef = doc(db, `${anio}_eventos/${evento}/modalidad/${modalidad}`);
+    const modalidadDoc = await getDoc(modalidadRef);
+
+    if (!modalidadDoc.exists()) {
+      await setDoc(modalidadRef, {
+        activo: true
+      });
+    }
 
     await setDoc(docRef, { campos });
 
