@@ -51,6 +51,7 @@ export async function obtenerEquipos(año, evento, modalidad) {
 }
 
 
+
 //
 if (location.pathname.includes("reportes.html")) {
   import("https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js").then(({ jsPDF }) => {
@@ -102,3 +103,183 @@ if (location.pathname.includes("reportes.html")) {
     };
   });
 }
+
+
+// ✅ Cargar jsPDF y html2canvas si estamos en reportes.html
+if (location.pathname.includes("reportes.html")) {
+  import("https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js").then(({ jsPDF }) => {
+    window.jspdf = { jsPDF };
+  });
+  import("https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js");
+}
+
+let datosEventos = [];
+
+// ✅ Mostrar tabla y actualizar título dinámicamente
+function mostrarEnTabla(datos, titulo = "Eventos") {
+  const tbody = document.querySelector("#tabla-eventos tbody");
+  const tituloTabla = document.getElementById("tituloTabla");
+
+  tbody.innerHTML = "";
+  tituloTabla.textContent = `Lista de ${titulo}`;
+
+  if (datos.length === 0) {
+    const fila = document.createElement("tr");
+    fila.innerHTML = `<td colspan="2" style="text-align:center; padding:10px;">No se encontraron ${titulo.toLowerCase()}.</td>`;
+    tbody.appendChild(fila);
+    return;
+  }
+
+  datos.forEach((item, index) => {
+    const fila = document.createElement("tr");
+    fila.innerHTML = `
+      <td style="border:1px solid #ccc; padding:6px;">${index + 1}</td>
+      <td style="border:1px solid #ccc; padding:6px;">${item}</td>
+    `;
+    tbody.appendChild(fila);
+  });
+
+  datosEventos = datos;
+}
+
+// ✅ Generar PDF desde plantilla HTML
+async function imprimirPlantillaComoPDF() {
+  const contenedor = document.getElementById("plantillaPDF");
+
+  if (!contenedor || datosEventos.length === 0) {
+    alert("No hay datos para exportar.");
+    return;
+  }
+
+  while (!window.jspdf || !window.jspdf.jsPDF) {
+    await new Promise(resolve => setTimeout(resolve, 100));
+  }
+
+  const canvas = await html2canvas(contenedor, { scale: 2 });
+
+  const imgData = canvas.toDataURL("image/png");
+  const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF("p", "mm", "a4");
+
+  const pdfWidth = pdf.internal.pageSize.getWidth();
+  const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+
+  pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+  pdf.save("reporte.pdf");
+}
+
+
+// ✅ Buscar datos al dar clic en Buscar
+window.buscarEquipos = async function () {
+  const año = document.getElementById("año-combobox").value;
+  const evento = document.getElementById("evento-combobox").value;
+  const modo = window.modoSeleccionado || "";
+
+  if (!año) {
+    alert("Selecciona un año.");
+    return;
+  }
+
+  if (modo === "eventos") {
+    const eventos = await obtenerEventos(año);
+    mostrarEnTabla(eventos, "Eventos");
+    return;
+  }
+
+  if (modo === "modalidades") {
+    if (!evento) {
+      alert("Selecciona un evento.");
+      return;
+    }
+
+    const modalidades = await obtenerModalidades(año, evento);
+    mostrarEnTabla(modalidades, "Modalidades");
+  }
+};
+
+// ✅ Configuración de interfaz
+document.addEventListener("DOMContentLoaded", async () => {
+  const añoSelect = document.getElementById("año-combobox");
+  const eventoSelect = document.getElementById("evento-combobox");
+  const modalidadSelect = document.getElementById("modalidad-combobox");
+  const btnEventos = document.getElementById("btnEventos");
+  const btnModalidades = document.getElementById("btnModalidades");
+  const btnDescargarPDF = document.getElementById("btnDescargarPDF");
+
+  let modo = "";
+  window.modoSeleccionado = modo;
+
+  // ✅ Ocultar combos al iniciar
+  setTimeout(() => {
+    añoSelect.style.display = "none";
+    eventoSelect.style.display = "none";
+    modalidadSelect.style.display = "none";
+  }, 0);
+
+  const limpiarCombos = () => {
+    añoSelect.value = "";
+    eventoSelect.innerHTML = `<option value="">Selecciona Evento</option>`;
+    modalidadSelect.innerHTML = `<option value="">Selecciona Modalidad</option>`;
+  };
+
+  const llenarAños = async () => {
+    const años = await obtenerAños();
+    añoSelect.innerHTML = `<option value="">Selecciona año</option>`;
+    años.forEach(a => {
+      const option = document.createElement("option");
+      option.value = a;
+      option.textContent = a;
+      añoSelect.appendChild(option);
+    });
+  };
+
+  btnEventos.addEventListener("click", async () => {
+    modo = "eventos";
+    window.modoSeleccionado = modo;
+    await llenarAños();
+    limpiarCombos();
+
+    añoSelect.style.display = "block";
+    eventoSelect.style.display = "none";
+    modalidadSelect.style.display = "none";
+  });
+
+  btnModalidades.addEventListener("click", async () => {
+    modo = "modalidades";
+    window.modoSeleccionado = modo;
+    await llenarAños();
+    limpiarCombos();
+
+    añoSelect.style.display = "block";
+    eventoSelect.style.display = "none";
+    modalidadSelect.style.display = "none";
+  });
+
+  añoSelect.addEventListener("change", async () => {
+    const año = añoSelect.value;
+
+    if (!año) {
+      eventoSelect.style.display = "none";
+      return;
+    }
+
+    if (window.modoSeleccionado === "modalidades") {
+      const eventos = await obtenerEventos(año);
+      eventoSelect.innerHTML = `<option value="">Selecciona Evento</option>`;
+      eventos.forEach(ev => {
+        const option = document.createElement("option");
+        option.value = ev;
+        option.textContent = ev;
+        eventoSelect.appendChild(option);
+      });
+
+      eventoSelect.style.display = "block";
+    }
+  });
+
+  modalidadSelect.style.display = "none";
+
+  if (btnDescargarPDF) {
+    btnDescargarPDF.addEventListener("click", imprimirPlantillaComoPDF);
+  }
+});
