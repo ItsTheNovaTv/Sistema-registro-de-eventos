@@ -46,6 +46,7 @@
 
                     <button type="button" id="agregarCampo" class="boton-secundario" style="margin-top: 1rem;">Agregar campo</button>
                     <button type="button" id="agregarCamposBase" class="boton-secundario" style="margin-top: 1rem;">Agregar campos básicos</button>
+                    <button type="button" id="btnCrearEventoModalidad" class="boton-secundario">Crear evento y modalidad sin configuración</button>
 
                     <button type="button" id="limpiarCampos" class="boton-secundario" style="margin-top: 1rem;">Limpiar todos los campos</button>
                     <div style="margin-top: 2rem;">
@@ -55,6 +56,16 @@
                 </div>
             </main>
         </div>
+        <div id="modalConfirmacion" class="modal-backdrop oculto">
+            <div class="modal-box">
+                <p id="modalMensaje">¿Estás seguro de continuar?</p>
+                <div class="modal-acciones">
+                    <button id="btnCancelarModal" class="boton-secundario">Cancelar</button>
+                    <button id="btnAceptarModal" class="boton-principal">Aceptar</button>
+                </div>
+            </div>
+        </div>
+
     <script type="module" src="../Js/components/toast.js"></script>
     <script type="module" src="components/loadComponentes.js"></script>
     <script type="module" src="../Js/components/proteccionSesion.js"></script>

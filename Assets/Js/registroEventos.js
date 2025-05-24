@@ -140,7 +140,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const inputs = bloque.querySelectorAll('.opcion-select');
         const opciones = Array.from(inputs).map(inp => inp.value.trim()).filter(val => val !== '');
         if (opciones.length === 0) {
-          alert(`⚠️ El campo "${nombre}" necesita al menos una opción válida.`);
+          mostrarToast(`⚠️ El campo "${nombre}" necesita al menos una opción válida.`, 'warning');
           return;
         }
         campo.opciones = opciones;
@@ -164,7 +164,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (existente.exists()) {
       const confirmar = confirm("⚠️ Esta modalidad ya tiene una configuración. ¿Deseas sobrescribirla?");
       if (!confirmar) {
-        alert("❌ Operación cancelada.");
+        mostrarToast('❌ Operación cancelada.', 'error');
         return;
       }
     }
@@ -186,7 +186,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     await setDoc(docRef, { campos });
-    alert('✅ Configuración guardada correctamente.');
+    mostrarToast('✅ Configuración guardada correctamente.',"success");
     formulario.reset();
     contenedorCampos.innerHTML = '';
     contador = 0;
@@ -241,4 +241,133 @@ document.addEventListener('DOMContentLoaded', () => {
       cargarModalidades(anio, evento);
     }, 2000);
   });
+  document.getElementById("btnCrearEventoModalidad").addEventListener("click", async () => {
+  const anio = inputAnio.value;
+  const evento = inputEvento.value.trim().toLowerCase().replace(/\s+/g, '_');
+  const modalidad = inputModalidad.value.trim().toLowerCase().replace(/\s+/g, '_');
+
+  if (!anio || !evento) {
+    mostrarToast("❌ Debes ingresar al menos el año y el nombre del evento.", "error");
+    return;
+  }
+
+  try {
+    const eventoRef = doc(db, `${anio}_eventos/${evento}`);
+    const eventoDoc = await getDoc(eventoRef);
+    if (!eventoDoc.exists()) {
+      await setDoc(eventoRef, {
+        nombre: evento,
+        creado: new Date(),
+        creado_por: sessionStorage.getItem("usuarioId") || "admin"
+      });
+      mostrarToast("✅ Evento creado exitosamente.", "success");
+    } else {
+      mostrarToast("ℹ️ El evento ya existía.", "warning");
+    }
+
+    if (modalidad) {
+      const modalidadRef = doc(db, `${anio}_eventos/${evento}/modalidad/${modalidad}`);
+      const modalidadDoc = await getDoc(modalidadRef);
+      if (!modalidadDoc.exists()) {
+        await setDoc(modalidadRef, { activo: true });
+        mostrarToast("✅ Modalidad creada sin configuración.", "success");
+      } else {
+        mostrarToast("ℹ️ La modalidad ya existía.", "warning");
+      }
+    }
+  } catch (error) {
+    console.error("Error al crear evento o modalidad:", error);
+    mostrarToast("❌ Ocurrió un error al registrar el evento o modalidad.", "error");
+  }
+});
+function mostrarModalConfirmacion(mensaje, callbackAceptar) {
+  const modal = document.getElementById("modalConfirmacion");
+  const mensajeElemento = document.getElementById("modalMensaje");
+  const btnAceptar = document.getElementById("btnAceptarModal");
+  const btnCancelar = document.getElementById("btnCancelarModal");
+
+  mensajeElemento.textContent = mensaje;
+  modal.classList.remove("oculto");
+
+  const cerrarModal = () => {
+    modal.classList.add("oculto");
+    btnAceptar.removeEventListener("click", aceptar);
+    btnCancelar.removeEventListener("click", cerrarModal);
+  };
+
+  const aceptar = () => {
+    callbackAceptar();
+    cerrarModal();
+  };
+
+  btnAceptar.addEventListener("click", aceptar);
+  btnCancelar.addEventListener("click", cerrarModal);
+}
+
+
+function mostrarModalConfirmacion(mensaje, callbackAceptar) {
+  const modal = document.getElementById("modalConfirmacion");
+  const mensajeElemento = document.getElementById("modalMensaje");
+  const btnAceptar = document.getElementById("btnAceptarModal");
+  const btnCancelar = document.getElementById("btnCancelarModal");
+
+  mensajeElemento.textContent = mensaje;
+  modal.classList.remove("oculto");
+
+  const cerrarModal = () => {
+    modal.classList.add("oculto");
+    btnAceptar.removeEventListener("click", aceptar);
+    btnCancelar.removeEventListener("click", cerrarModal);
+  };
+
+  const aceptar = () => {
+    callbackAceptar();
+    cerrarModal();
+  };
+
+  btnAceptar.addEventListener("click", aceptar);
+  btnCancelar.addEventListener("click", cerrarModal);
+}
+
+
+  document.getElementById("btnCrearEventoModalidad")?.addEventListener("click", async () => {
+    const anio = inputAnio.value;
+    const evento = inputEvento.value.trim().toLowerCase().replace(/\s+/g, '_');
+    const modalidad = inputModalidad.value.trim().toLowerCase().replace(/\s+/g, '_');
+
+    if (!anio || !evento) {
+      mostrarToast("❌ Debes ingresar al menos el año y el nombre del evento.", "error");
+      return;
+    }
+
+    try {
+      const eventoRef = doc(db, `${anio}_eventos/${evento}`);
+      const eventoDoc = await getDoc(eventoRef);
+      if (!eventoDoc.exists()) {
+        await setDoc(eventoRef, {
+          nombre: evento,
+          creado: new Date(),
+          creado_por: sessionStorage.getItem("usuarioId") || "admin"
+        });
+        mostrarToast("✅ Evento creado exitosamente.", "success");
+      } else {
+        mostrarToast("ℹ️ El evento ya existía.", "warning");
+      }
+
+      if (modalidad) {
+        const modalidadRef = doc(db, `${anio}_eventos/${evento}/modalidad/${modalidad}`);
+        const modalidadDoc = await getDoc(modalidadRef);
+        if (!modalidadDoc.exists()) {
+          await setDoc(modalidadRef, { activo: true });
+          mostrarToast("✅ Modalidad creada sin configuración.", "success");
+        } else {
+          mostrarToast("ℹ️ La modalidad ya existía.", "warning");
+        }
+      }
+    } catch (error) {
+      console.error("Error al crear evento o modalidad:", error);
+      mostrarToast("❌ Ocurrió un error al registrar el evento o modalidad.", "error");
+    }
+  });
+
 });
