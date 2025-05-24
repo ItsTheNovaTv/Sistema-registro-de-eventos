@@ -6,6 +6,7 @@
     <title>Registro</title>
     <link rel="stylesheet" href="/Assets/styles/inicio.css">
     <link rel="stylesheet" href="/Assets/styles/registro.css">
+    <link rel="stylesheet" href="/Assets/styles/toast.css">
 
 </head>
 
@@ -21,16 +22,21 @@
             <main class="main-content" style="padding: 2rem; width: 100%;">
                 <h2 style="margin-bottom: 1.5rem; color: #197cc8;">Registrar nuevo evento</h2>
 
+                <div id="toastContainer"></div>
+                
                 <div class="stat-box">
                     <form id="formRegistroEvento">
                     <label>Año del evento:</label>
                     <input type="number" name="anio" value="2025" required class="input">
 
                     <label>Nombre del evento:</label>
-                    <input type="text" name="evento" required class="input">
+                    <input list="eventosList" name="evento" required class="input">
+                    <datalist id="eventosList"></datalist>
+
 
                     <label>Modalidad:</label>
-                    <input type="text" name="modalidad" required class="input">
+                    <input list="modalidadesList" name="modalidad" required class="input">
+                    <datalist id="modalidadesList"></datalist>
 
                     <hr style="margin: 1.5rem 0;">
 
@@ -39,7 +45,9 @@
                     <div id="contenedorCampos"></div>
 
                     <button type="button" id="agregarCampo" class="boton-secundario" style="margin-top: 1rem;">Agregar campo</button>
-                    <button type="button" id="limpiarCampos" class="boton-secundario" style="margin-top: 1rem;">Limpiar campo</button>
+                    <button type="button" id="agregarCamposBase" class="boton-secundario" style="margin-top: 1rem;">Agregar campos básicos</button>
+
+                    <button type="button" id="limpiarCampos" class="boton-secundario" style="margin-top: 1rem;">Limpiar todos los campos</button>
                     <div style="margin-top: 2rem;">
                         <button type="submit" class="boton-principal">Guardar configuración</button>
                     </div>
@@ -47,6 +55,7 @@
                 </div>
             </main>
         </div>
+    <script type="module" src="../Js/components/toast.js"></script>
     <script type="module" src="components/loadComponentes.js"></script>
     <script type="module" src="../Js/components/proteccionSesion.js"></script>
     <script type="module" src="../Js/registroEventos.js"></script>
