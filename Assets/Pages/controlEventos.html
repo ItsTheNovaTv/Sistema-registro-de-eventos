@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>eventos</title>
+      <link rel="stylesheet" href="/Assets/styles/inicio.css">
+  <link rel="stylesheet" href="/Assets/styles/usuarios.css">
+</head>
+<body>
+    <header id="header"></header>
+    <div class="layout">   
+        <aside id="sidebar"></aside>
+
+        <main class="main-content">
+            <h1>Eventos</h1>
+            <p>Aqui sera el control de los eventos, se podra marcar a los equipos con asistencia, ganadores o agregar comentarios.</p>
+
+            <section class="module usuario-card">
+                <p><strong>Filtros </strong>
+                    <select name="año-combobox" id="año-combobox">
+                        <option value="">Selecciona año</option>
+                    </select>
+                    <select name="evento-combobox" id="evento-combobox">
+                        <option value="">Selecciona evento</option>
+                    </select>
+                    <select name="modalidad-combobox" id="modalidad-combobox">
+                        <option value="">Selecciona modalidad</option>
+                    </select>
+                    <button id="btnUsuariosFiltro">Buscar</button>
+                </p>
+            </section>
+
+            <section id="contenedor-equipos" class="module-body"></section>
+        </main>
+    <script type="module" src="components/loadComponentes.js"></script>
+    <script type="module" src="../Js/components/proteccionSesion.js"></script>
+</body>
+</html>

@@ -3,8 +3,6 @@ import {
   collection,
   getDocs
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
-// 🔹 AÑOS DISPONIBLES (2000 hasta el año actual)
 export async function obtenerAños() {
   const añoActual = new Date().getFullYear();
   const años = [];
@@ -49,6 +47,23 @@ export async function obtenerEquipos(año, evento, modalidad) {
     ...doc.data()
   }));
 }
+
+document.addEventListener("DOMContentLoaded", async () => {
+  // ✅ En caso de que no existan los elementos, evitar errores, si se agrega otro componente u otro DOMListener, agregar aquí y en el if de abajo
+  const añoSelect = document.getElementById("año-combobox");
+  const eventoSelect = document.getElementById("evento-combobox");
+  const modalidadSelect = document.getElementById("modalidad-combobox");
+  const btnEventos = document.getElementById("btnEventos");
+  const btnModalidades = document.getElementById("btnModalidades");
+  const btnDescargarPDF = document.getElementById("btnDescargarPDF");
+
+  let modo = "";
+  window.modoSeleccionado = modo;
+
+  // ✅ Evita error si los elementos no existen en esta página
+  if (!btnEventos || !btnModalidades || !añoSelect || !eventoSelect || !modalidadSelect) return;
+  
+// 🔹 AÑOS DISPONIBLES (2000 hasta el año actual)
 
 
 
@@ -282,4 +297,5 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (btnDescargarPDF) {
     btnDescargarPDF.addEventListener("click", imprimirPlantillaComoPDF);
   }
+});
 });
