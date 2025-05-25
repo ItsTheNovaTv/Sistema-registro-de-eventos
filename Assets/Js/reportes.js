@@ -234,24 +234,88 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (btnDescargarPDF) {
         document.getElementById("btnDescargarPDF").addEventListener("click", imprimirPlantillaComoPDF);
     }
+    window.XLSX = XLSX; 
+
 });
 
 document.getElementById("btnDescargarExcel").addEventListener("click", () => {
     const modo = window.modoSeleccionado || "eventos";
-    const datos = window.datosEventos;
+    const tabla = document.querySelector("#tabla-eventos");
 
-    if (!Array.isArray(datos) || datos.length === 0) {
+    if (!tabla) {
+        alert("No se encontró la tabla.");
+        return;
+    }
+
+    const filas = Array.from(tabla.querySelectorAll("tr"));
+    if (filas.length <= 1) {
         alert("No hay datos para exportar.");
         return;
     }
 
-    const encabezados = [["#", "Nombre"]];
-    const filas = datos.map((nombre, index) => [index + 1, nombre]);
-    const hoja = XLSX.utils.aoa_to_sheet(encabezados.concat(filas));
+    const datos = filas.map(row =>
+        Array.from(row.querySelectorAll("th, td")).map(cell => cell.textContent.trim())
+    );
 
-    const libro = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(libro, hoja, "Reporte");
+    const fecha = new Date().toLocaleDateString("es-MX", {
+        day: '2-digit', month: 'long', year: 'numeric'
+    });
 
-    XLSX.writeFile(libro, `reporte_${modo}.xlsx`);
+    const encabezado = [
+        ["INSTITUTO TECNOLÓGICO SUPERIOR DE PUERTO PEÑASCO"],
+        [`Departamento de Gestión – Reporte de ${modo}`],
+        [`Fecha: ${fecha}`],
+        [],
+    ];
+
+    const hoja = window.XLSX.utils.aoa_to_sheet([...encabezado, ...datos]);
+
+    hoja["!merges"] = [
+        { s: { r: 0, c: 0 }, e: { r: 0, c: 1 } },
+        { s: { r: 1, c: 0 }, e: { r: 1, c: 1 } },
+        { s: { r: 2, c: 0 }, e: { r: 2, c: 1 } }
+    ];
+
+    const range = window.XLSX.utils.decode_range(hoja["!ref"]);
+    for (let R = 0; R <= range.e.r; ++R) {
+        for (let C = 0; C <= range.e.c; ++C) {
+            const celda = hoja[window.XLSX.utils.encode_cell({ r: R, c: C })];
+            if (!celda) continue;
+
+            celda.s = {
+                font: {
+                    name: "Calibri",
+                    sz: R === 0 ? 16 : R <= 2 ? 12 : 11,
+                    bold: R <= 2 || R === 4,
+                    color: R === 4 ? { rgb: "FFFFFF" } : { rgb: "000000" }
+                },
+                alignment: {
+                    horizontal: "center",
+                    vertical: "center",
+                    wrapText: true
+                },
+                fill: R === 4
+                    ? { fgColor: { rgb: "1E88E5" } }
+                    : R <= 2
+                        ? { fgColor: { rgb: "ECEFF1" } }
+                        : { fgColor: { rgb: "FFFFFF" } },
+                border: {
+                    top: { style: "thin", color: { rgb: "000000" } },
+                    bottom: { style: "thin", color: { rgb: "000000" } },
+                    left: { style: "thin", color: { rgb: "000000" } },
+                    right: { style: "thin", color: { rgb: "000000" } }
+                }
+            };
+        }
+    }
+
+    hoja["!cols"] = [
+        { wch: 6 },
+        { wch: 40 }
+    ];
+
+    const libro = window.XLSX.utils.book_new();
+    window.XLSX.utils.book_append_sheet(libro, hoja, "Reporte");
+
+    window.XLSX.writeFile(libro, `reporte_${modo}.xlsx`);
 });
-
