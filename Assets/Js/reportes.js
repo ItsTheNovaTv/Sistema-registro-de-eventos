@@ -4,24 +4,32 @@ import {
     getDocs
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-let datosEventos = [];
-
 async function obtenerAños() {
-    const posiblesAños = ["2023", "2024", "2025"];
+    const añoInicio = 2020;
+    const añoActual = new Date().getFullYear();
+    const añoExtra = añoActual + 1;
+
     const añosDisponibles = [];
 
-    for (const año of posiblesAños) {
+    for (let año = añoInicio; año <= añoActual; año++) {
         try {
             const ref = collection(db, `${año}_eventos`);
             const snap = await getDocs(ref);
-            if (!snap.empty) añosDisponibles.push(año);
+            if (!snap.empty) {
+                añosDisponibles.push(año.toString());
+            }
         } catch (e) {
             console.warn(`No se pudo acceder a ${año}_eventos`);
         }
     }
 
+    // Añadir el año siguiente (aunque no tenga datos)
+    añosDisponibles.push(añoExtra.toString());
+
     return añosDisponibles;
 }
+
+
 
 async function obtenerEventos(año) {
     const eventosRef = collection(db, `${año}_eventos`);
