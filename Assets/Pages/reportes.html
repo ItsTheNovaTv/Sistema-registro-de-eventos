@@ -12,17 +12,13 @@
 
     <!-- Librerías PDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-
 
     <!-- Librería de íconos -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 
-
 <body>
-
     <header id="header"></header>
 
     <div class="layout">
@@ -37,9 +33,6 @@
                     <h1>FILTROS</h1>
                     <button id="btnEventos">eventos</button>
                     <button id="btnModalidades">modalidades</button>
-
-
-
 
                     <select name="año-combobox" id="año-combobox">
                         <option value="">Selecciona año</option>
@@ -64,12 +57,12 @@
                     </button>
                 </div>
             </div>
-            <!-- IFRAME DENTRO DE UNA TARJETA -->
-            <!-- TABLA HTML DINÁMICA -->
-            <!-- Contenedor para la tabla -->
-            <div id="plantillaPDF" style="padding: 30px; background-color: white; font-family: Arial;">
-                <h2 id="tituloTabla" style="text-align: center; margin-bottom: 20px;">Lista de Eventos / Modalidades
-                </h2>
+
+            <!-- TABLA VISUAL -->
+            <div id="contenidoVisual" style="padding: 20px;" class="usuario-card">
+                <h3 id="tituloTablaVisual" style="text-align: center; margin-bottom: 20px;">Lista de Eventos /
+                    Modalidades</h3>
+
                 <table id="tabla-eventos" style="width: 100%; border-collapse: collapse;">
                     <thead>
                         <tr>
@@ -80,10 +73,73 @@
                     <tbody></tbody>
                 </table>
             </div>
+            <!-- FIN TABLA VISUAL -->
 
 
+            <!-- SOLO PARA PDF -->
+            <div id="plantillaPDFEventos"
+                style="position: absolute; left: -9999px; top: -9999px; visibility: hidden; background-color: white; padding: 40px; font-family: Arial;">
+                <div id="encabezadoPDF"
+                    style="display: flex; align-items: center; gap: 20px; justify-content: center; margin-bottom: 30px;">
+                    <img src="/Assets/sources/tecnm.png" alt="Logo" style="width: 80px; height: auto;" />
+                    <div style="text-align: center;">
+                        <h2 style="margin: 0;">INSTITUTO TECNOLÓGICO SUPERIOR DE TU PUERTO PEÑASCO</h2>
+                        <p style="margin: 5px 0;">Departamento de Gestion</p>
+                        <p style="margin: 5px 0;">Reporte de Eventos</p>
+                        <p id="fechaReporte" style="margin-top: 10px; font-size: 12px;"></p>
+                    </div>
+                </div>
 
+                <h3 id="tituloTabla" style="text-align: center; margin-bottom: 20px;">Lista de Eventos / Modalidades
+                </h3>
 
+                <table id="tabla-eventos-pdf" style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr>
+                            <th style="border: 1px solid #ccc; padding: 8px;">#</th>
+                            <th style="border: 1px solid #ccc; padding: 8px;">Nombre</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+
+                <div style="margin-top: 80px; text-align: center;">
+                    <p>Vo. Bo. ____________________________</p>
+                    <p style="font-size: 12px;">Jefe de Departamento</p>
+                </div>
+            </div>
+
+            <div id="plantillaPDFModalidades"
+                style="position: absolute; left: -9999px; top: -9999px; visibility: hidden; background-color: white; padding: 40px; font-family: Arial;">
+                <div id="encabezadoPDF"
+                    style="display: flex; align-items: center; gap: 20px; justify-content: center; margin-bottom: 30px;">
+                    <img src="/Assets/sources/tecnm.png" alt="Logo" style="width: 80px; height: auto;" />
+                    <div style="text-align: center;">
+                        <h2 style="margin: 0;">INSTITUTO TECNOLÓGICO SUPERIOR DE PUERTO PEÑASCO</h2>
+                        <p style="margin: 5px 0;">Departamento de Gestión</p>
+                        <p style="margin: 5px 0;">Reporte de Modalidades</p>
+                        <p id="fechaReporteModalidades" style="margin-top: 10px; font-size: 12px;"></p>
+                    </div>
+                </div>
+
+                <h3 id="tituloTablaModalidades" style="text-align: center; margin-bottom: 20px;">Lista de Modalidades
+                </h3>
+
+                <table id="tabla-modalidades-pdf" style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr>
+                            <th style="border: 1px solid #ccc; padding: 8px;">#</th>
+                            <th style="border: 1px solid #ccc; padding: 8px;">Nombre</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+
+                <div style="margin-top: 80px; text-align: center;">
+                    <p>Vo. Bo. ____________________________</p>
+                    <p style="font-size: 12px;">Jefe de Departamento</p>
+                </div>
+            </div>
 
 
         </main>
@@ -92,7 +148,7 @@
     <!-- SCRIPTS -->
     <script type="module" src="/Assets/Js/components/proteccionSesion.js"></script>
     <script type="module" src="/Assets/Js/components/sidebarToggle.js"></script>
-    <script type="module" src="/Assets/Js/components/consultas.js"></script>
+    <script type="module" src="/Assets/Js/reportes.js"></script>
     <script type="module" src="/Assets/Pages/components/loadComponentes.js"></script>
 </body>
 
