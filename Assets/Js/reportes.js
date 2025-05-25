@@ -4,17 +4,8 @@ import {
     getDocs
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-// 📦 Cargar librerías PDF solo si estamos en reportes.html
-if (location.pathname.includes("reportes.html")) {
-    import("https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js").then(({ jsPDF }) => {
-        window.jspdf = { jsPDF };
-    });
-    import("https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js");
-}
-
 let datosEventos = [];
 
-// 🔹 FUNCIONES DE FIRESTORE 🔹
 async function obtenerAños() {
     const posiblesAños = ["2023", "2024", "2025"];
     const añosDisponibles = [];
@@ -45,6 +36,7 @@ async function obtenerModalidades(año, evento) {
 }
 
 function mostrarEnTabla(datos, titulo = "Eventos") {
+
     const modo = window.modoSeleccionado;
     const tbodyWeb = document.querySelector("#tabla-eventos tbody");
     const tituloWeb = document.getElementById("tituloTablaVisual");
@@ -81,7 +73,6 @@ function mostrarEnTabla(datos, titulo = "Eventos") {
     });
 }
 
-
 async function imprimirPlantillaComoPDF() {
     const modo = window.modoSeleccionado;
     let contenedor, fechaId;
@@ -107,16 +98,18 @@ async function imprimirPlantillaComoPDF() {
         return;
     }
 
-    // Establecer fecha visible en el PDF
     const fechaActual = new Date().toLocaleDateString("es-MX", {
         day: '2-digit', month: 'long', year: 'numeric'
     });
     const fechaEl = document.getElementById(fechaId);
     if (fechaEl) fechaEl.textContent = `Fecha de generación: ${fechaActual}`;
 
-    while (!window.jspdf || !window.jspdf.jsPDF) {
-        await new Promise(resolve => setTimeout(resolve, 100));
-    }
+    // Mostrar temporalmente el contenedor
+    contenedor.style.visibility = "visible";
+    contenedor.style.position = "static";
+
+    // Esperar a que el DOM se renderice
+    await new Promise(resolve => setTimeout(resolve, 200));
 
     const canvas = await html2canvas(contenedor, {
         scale: 2,
@@ -133,7 +126,12 @@ async function imprimirPlantillaComoPDF() {
 
     pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
     pdf.save(`reporte_${modo}.pdf`);
+
+    // Volver a ocultar el contenedor
+    contenedor.style.visibility = "hidden";
+    contenedor.style.position = "absolute";
 }
+
 
 
 
@@ -237,3 +235,23 @@ document.addEventListener("DOMContentLoaded", async () => {
         document.getElementById("btnDescargarPDF").addEventListener("click", imprimirPlantillaComoPDF);
     }
 });
+
+document.getElementById("btnDescargarExcel").addEventListener("click", () => {
+    const modo = window.modoSeleccionado || "eventos";
+    const datos = window.datosEventos;
+
+    if (!Array.isArray(datos) || datos.length === 0) {
+        alert("No hay datos para exportar.");
+        return;
+    }
+
+    const encabezados = [["#", "Nombre"]];
+    const filas = datos.map((nombre, index) => [index + 1, nombre]);
+    const hoja = XLSX.utils.aoa_to_sheet(encabezados.concat(filas));
+
+    const libro = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(libro, hoja, "Reporte");
+
+    XLSX.writeFile(libro, `reporte_${modo}.xlsx`);
+});
+

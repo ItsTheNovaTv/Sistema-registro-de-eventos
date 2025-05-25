@@ -10,9 +10,6 @@
     <link rel="stylesheet" href="/Assets/styles/usuarios.css" />
     <link rel="stylesheet" href="/Assets/styles/reportes.css" />
 
-    <!-- Librerías PDF -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
     <!-- Librería de íconos -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -49,7 +46,7 @@
                 <!-- Tarjeta de botones -->
                 <div class="usuario-card"
                     style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; width: 180px;">
-                    <button id="btnDescargarPDF" class="btn-icon" style="padding: 8px 14px; font-size: 13px;">
+                    <button id="btnDescargarPDF" class="btn-icon">
                         <i class="fas fa-file-pdf"></i> PDF
                     </button>
                     <button id="btnDescargarExcel" class="btn-icon" style="padding: 8px 14px; font-size: 13px;">
@@ -150,6 +147,15 @@
     <script type="module" src="/Assets/Js/components/sidebarToggle.js"></script>
     <script type="module" src="/Assets/Js/reportes.js"></script>
     <script type="module" src="/Assets/Pages/components/loadComponentes.js"></script>
+
+    <!-- Librerías PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <!-- Librerías excel -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+
 </body>
 
 </html>
