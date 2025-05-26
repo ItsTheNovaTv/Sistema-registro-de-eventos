@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="stylesheet" href="../styles/index.css">
+  <link rel="stylesheet" href="../styles/toast.css">
+  <title>Iniciar Sesión</title>
+ 
+</head>
+<body>
+  <div id="toastContainer"></div>
+  <form class="login-container" id="formLogin">
+    <h2>Iniciar sesión</h2>
+    <input type="email" id="correo" placeholder="Correo electrónico" required />
+    <input type="password" id="contrasena" placeholder="Contraseña" required />
+    <button type="submit">Entrar</button>
+    <a href="/index.html">Volver al inicio</a>
+  </form>
+
+  <script type="module" src="../Js/index.js"></script>
+  <script type="module" src="../Js/components/toast.js"></script>
+</body>
+</html>

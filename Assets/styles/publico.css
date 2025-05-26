@@ -1,0 +1,79 @@
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f4f6f9;
+  color: #333;
+}
+
+main.registro-sencillo {
+  max-width: 600px;
+  margin: 4rem auto;
+  padding: 2.5rem;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+  text-align: center;
+  color: #197cc8;
+  margin-bottom: 2.5rem;
+}
+
+label {
+  display: block;
+  margin-bottom: 0.4rem;
+  font-weight: 600;
+}
+
+.input,
+input,
+select,
+textarea {
+  width: 100%;
+  padding: 0.6rem;
+  margin-bottom: 1.5rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+button {
+  font-size: 1rem;
+  border-radius: 6px;
+  padding: 0.75rem 1.2rem;
+  width: 100%;
+  display: block;
+  cursor: pointer;
+}
+
+button.boton-principal {
+  background-color: #197cc8;
+  color: #fff;
+  border: none;
+  margin-bottom: 0.75rem;
+}
+
+button.boton-principal:hover {
+  background-color: #0e5fa3;
+}
+
+button.boton-secundario {
+  background-color: #f5f5f5;
+  color: #197cc8;
+  border: 1px solid #197cc8;
+  margin-top: 1rem;
+}
+
+button.boton-secundario:hover {
+  background-color: #dbeefc;
+}
+
+hr {
+  margin: 2rem 0;
+  border: none;
+  border-top: 1px solid #ddd;
+}

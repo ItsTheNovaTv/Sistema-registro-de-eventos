@@ -114,7 +114,9 @@ document.addEventListener('DOMContentLoaded', () => {
       { nombre: "Institución", tipo: "text", requerido: true },
       { nombre: "Asesor", tipo: "text", requerido: false },
       { nombre: "Contacto", tipo: "text", requerido: true },
-      { nombre: "Integrantes", tipo: "lista", requerido: true, cantidad: 4 }
+      { nombre: "Integrantes", tipo: "lista", requerido: true, cantidad: 4 },
+      { nombre: "Participación", tipo: "select", requerido: false, opciones: ["Participo", "1er Lugar","2do Lugar", "3er Lugar","No participó"] }
+
     ];
     camposBase.forEach(c => crearCampo(c.nombre, c.tipo, c.requerido, c.opciones || [], c.cantidad || 1));
   });
@@ -280,30 +282,6 @@ document.addEventListener('DOMContentLoaded', () => {
     mostrarToast("❌ Ocurrió un error al registrar el evento o modalidad.", "error");
   }
 });
-function mostrarModalConfirmacion(mensaje, callbackAceptar) {
-  const modal = document.getElementById("modalConfirmacion");
-  const mensajeElemento = document.getElementById("modalMensaje");
-  const btnAceptar = document.getElementById("btnAceptarModal");
-  const btnCancelar = document.getElementById("btnCancelarModal");
-
-  mensajeElemento.textContent = mensaje;
-  modal.classList.remove("oculto");
-
-  const cerrarModal = () => {
-    modal.classList.add("oculto");
-    btnAceptar.removeEventListener("click", aceptar);
-    btnCancelar.removeEventListener("click", cerrarModal);
-  };
-
-  const aceptar = () => {
-    callbackAceptar();
-    cerrarModal();
-  };
-
-  btnAceptar.addEventListener("click", aceptar);
-  btnCancelar.addEventListener("click", cerrarModal);
-}
-
 
 function mostrarModalConfirmacion(mensaje, callbackAceptar) {
   const modal = document.getElementById("modalConfirmacion");
@@ -328,7 +306,6 @@ function mostrarModalConfirmacion(mensaje, callbackAceptar) {
   btnAceptar.addEventListener("click", aceptar);
   btnCancelar.addEventListener("click", cerrarModal);
 }
-
 
   document.getElementById("btnCrearEventoModalidad")?.addEventListener("click", async () => {
     const anio = inputAnio.value;
@@ -369,5 +346,4 @@ function mostrarModalConfirmacion(mensaje, callbackAceptar) {
       mostrarToast("❌ Ocurrió un error al registrar el evento o modalidad.", "error");
     }
   });
-
 });

@@ -3,22 +3,47 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <link rel="stylesheet" href="Assets/styles/index.css">
-  <link rel="stylesheet" href="Assets/styles/toast.css">
-  <title>Iniciar Sesión</title>
- 
+  <title>Registro de Equipo</title>
+  <link rel="stylesheet" href="./Assets/styles/publico.css" />
 </head>
 <body>
-  <div id="toastContainer"></div>
-  <form class="login-container" id="formLogin">
-    <h2>Iniciar sesión</h2>
-    <input type="email" id="correo" placeholder="Correo electrónico" required />
-    <input type="password" id="contrasena" placeholder="Contraseña" required />
-    <button type="submit">Entrar</button>
-    <a href="/index.html">Volver al inicio</a>
-  </form>
+  <main class="registro-sencillo">
+    <h1>Registro de Equipos</h1>
 
-  <script type="module" src="Assets/Js/index.js"></script>
-  <script type="module" src="Assets/Js/components/toast.js"></script>
+    <!-- Formulario de selección de año, evento, modalidad -->
+    <form id="formSeleccionPublica">
+      <label for="anio">Año:</label>
+      <select id="anio" name="anio" class="input" required></select>
+
+      <label for="evento">Evento:</label>
+      <select id="evento" name="evento" class="input" required></select>
+
+      <label for="modalidad">Modalidad:</label>
+      <select id="modalidad" name="modalidad" class="input" required></select>
+
+      <button type="submit" class="boton-principal">Cargar formulario</button>
+    </form>
+
+    <!-- Formulario generado dinámicamente -->
+    <form id="formPublico" style="display: none;">
+      <div id="camposFormularioPublico"></div>
+      <button type="submit" class="boton-principal">Registrar</button>
+    </form>
+
+    <hr />
+
+    <!-- Botón para acceder como administrador -->
+    <button id="btnLoginAdmin" class="boton-secundario">Acceder como administrador</button>
+  </main>
+
+  <!-- Scripts -->
+  <script type="module" src="./Assets/Js/formularioPublico.js"></script>
+  <script>
+    document.getElementById("btnLoginAdmin").addEventListener("click", () => {
+      const win = window.open("./Assets/Pages/login.html", "_blank");
+      win?.focus();
+      win?.requestFullscreen?.();
+    });
+  </script>
 </body>
 </html>

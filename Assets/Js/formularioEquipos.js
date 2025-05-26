@@ -71,59 +71,62 @@ document.addEventListener('DOMContentLoaded', () => {
     formDinamico.style.display = 'block';
 
     campos.forEach(campo => {
-      const div = document.createElement('div');
-      div.classList.add('campo-dinamico');
-      div.style.marginBottom = '1rem';
+    
 
-      const label = document.createElement('label');
-      label.textContent = campo.nombre;
-      div.appendChild(label);
+    const div = document.createElement('div');
+    div.classList.add('campo-dinamico');
+    div.style.marginBottom = '1rem';
 
-      if (campo.tipo === 'lista' && campo.cantidad) {
-        for (let i = 0; i < campo.cantidad; i++) {
-          const input = document.createElement('input');
-          input.type = 'text';
-          input.name = `${campo.nombre}_${i}`;
-          input.placeholder = `${campo.nombre} ${i + 1}`;
-          input.classList.add('input');
-          if (campo.requerido) input.required = true;
-          div.appendChild(input);
-        }
-      } else if (campo.tipo === 'select' && campo.opciones) {
-        const select = document.createElement('select');
-        select.name = campo.nombre;
-        select.required = campo.requerido;
-        campo.opciones.forEach(op => {
-          const opt = document.createElement('option');
-          opt.value = op;
-          opt.textContent = op;
-          select.appendChild(opt);
-        });
-        select.classList.add('input');
-        div.appendChild(select);
-      } else if (campo.tipo === 'boolean') {
-        const select = document.createElement('select');
-        select.name = campo.nombre;
-        select.required = campo.requerido;
-        ['Sí', 'No'].forEach(op => {
-          const opt = document.createElement('option');
-          opt.value = op;
-          opt.textContent = op;
-          select.appendChild(opt);
-        });
-        select.classList.add('input');
-        div.appendChild(select);
-      } else {
-        const input = document.createElement(campo.tipo === 'textarea' ? 'textarea' : 'input');
+    const label = document.createElement('label');
+    label.textContent = campo.nombre;
+    div.appendChild(label);
+
+    if (campo.tipo === 'lista' && campo.cantidad) {
+      for (let i = 0; i < campo.cantidad; i++) {
+        const input = document.createElement('input');
         input.type = 'text';
-        input.name = campo.nombre;
-        input.required = campo.requerido;
+        input.name = `${campo.nombre}_${i}`;
+        input.placeholder = `${campo.nombre} ${i + 1}`;
         input.classList.add('input');
+        if (campo.requerido) input.required = true;
         div.appendChild(input);
       }
+    } else if (campo.tipo === 'select' && campo.opciones) {
+      const select = document.createElement('select');
+      select.name = campo.nombre;
+      select.required = campo.requerido;
+      campo.opciones.forEach(op => {
+        const opt = document.createElement('option');
+        opt.value = op;
+        opt.textContent = op;
+        select.appendChild(opt);
+      });
+      select.classList.add('input');
+      div.appendChild(select);
+    } else if (campo.tipo === 'boolean') {
+      const select = document.createElement('select');
+      select.name = campo.nombre;
+      select.required = campo.requerido;
+      ['Sí', 'No'].forEach(op => {
+        const opt = document.createElement('option');
+        opt.value = op;
+        opt.textContent = op;
+        select.appendChild(opt);
+      });
+      select.classList.add('input');
+      div.appendChild(select);
+    } else {
+      const input = document.createElement(campo.tipo === 'textarea' ? 'textarea' : 'input');
+      input.type = 'text';
+      input.name = campo.nombre;
+      input.required = campo.requerido;
+      input.classList.add('input');
+      div.appendChild(input);
+      }
 
-      contenedorCampos.appendChild(div);
-    });
+    contenedorCampos.appendChild(div);
+  });
+
   });
 
   formDinamico.addEventListener('submit', (e) => {

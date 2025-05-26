@@ -6,7 +6,7 @@ import {
 
 
 export async function obtenerAños() {
- const añoInicio = 2020;
+    const añoInicio = 2020;
     const añoActual = new Date().getFullYear();
     const añoExtra = añoActual + 1;
 
@@ -20,7 +20,7 @@ export async function obtenerAños() {
                 añosDisponibles.push(año.toString());
             }
         } catch (e) {
-            console.warn("No se pudo acceder a "`${año}_eventos`);
+            console.warn(`No se pudo acceder a ${año}_eventos`);
         }
     }
 

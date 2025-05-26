@@ -4,6 +4,7 @@ import {
   obtenerModalidades,
   obtenerEquipos
 } from "./components/consultas.js";
+
 import {
   doc,
   getDoc,
@@ -14,9 +15,16 @@ import {
 let equipoEnEdicion = null; // al inicio del archivo
 
 import { db } from "../Js/components/Firebase.js";
+
+// 🔹 Renderizar equipos con configuración dinámica
 const formEditar = document.getElementById("formEditarEquipo");
 formEditar?.addEventListener("submit", async (e) => {
   e.preventDefault();
+
+  if (!equipoEnEdicion) {
+    mostrarToast("⚠️ No hay equipo seleccionado para editar.", "warning");
+    return;
+  }
 
   const configRef = doc(db, `${equipoEnEdicion.año}_eventos/${equipoEnEdicion.evento}/modalidad/${equipoEnEdicion.modalidad}/campos_config/config`);
   const configSnap = await getDoc(configRef);
@@ -42,83 +50,11 @@ formEditar?.addEventListener("submit", async (e) => {
     await updateDoc(equipoRef, nuevoDoc);
     mostrarToast("✅ Equipo actualizado correctamente.", "success");
     document.getElementById("modalEditarEquipo").classList.add("oculto");
+    document.getElementById("contenedorCamposEditar").innerHTML = ""; // Limpia campos al guardar
   } catch (err) {
     console.error("Error al actualizar equipo:", err);
     mostrarToast("❌ Error al actualizar equipo.", "error");
   }
-});
-
-document.addEventListener("DOMContentLoaded", async () => {
-  const añoSelect = document.getElementById("año-combobox");
-  const eventoSelect = document.getElementById("evento-combobox");
-  const modalidadSelect = document.getElementById("modalidad-combobox");
-  const contenedorEquipos = document.getElementById("contenedor-equipos");
-  const btnBuscar = document.getElementById("btnUsuariosFiltro");
-
-  // 🔹 Llenar años al cargar
-  const años = await obtenerAños();
-  años.forEach(año => {
-    const option = document.createElement("option");
-    option.value = año;
-    option.textContent = año;
-    añoSelect.appendChild(option);
-  });
-
-  // 🔹 Cuando cambia el año → cargar eventos
-  añoSelect.addEventListener("change", async () => {
-    const añoSeleccionado = añoSelect.value;
-    eventoSelect.innerHTML = `<option value="">Cargando eventos...</option>`;
-    modalidadSelect.innerHTML = `<option value="">Selecciona modalidad</option>`;
-    contenedorEquipos.innerHTML = "";
-
-    if (!añoSeleccionado) {
-      eventoSelect.innerHTML = `<option value="">Selecciona un año válido</option>`;
-      return;
-    }
-
-    const eventos = await obtenerEventos(añoSeleccionado);
-    eventoSelect.innerHTML = "";
-
-    if (eventos.length === 0) {
-      eventoSelect.innerHTML = `<option value="">No hay eventos</option>`;
-      return;
-    }
-
-    eventos.forEach(evento => {
-      const option = document.createElement("option");
-      option.value = evento;
-      option.textContent = evento;
-      eventoSelect.appendChild(option);
-    });
-  });
-
-  // 🔹 Cuando cambia el evento → cargar modalidades
-  eventoSelect.addEventListener("change", async () => {
-    const año = añoSelect.value;
-    const evento = eventoSelect.value;
-
-    modalidadSelect.innerHTML = `<option value="">Cargando modalidades...</option>`;
-    contenedorEquipos.innerHTML = "";
-
-    if (!año || !evento) return;
-
-    const modalidades = await obtenerModalidades(año, evento);
-    modalidadSelect.innerHTML = "";
-
-    if (modalidades.length === 0) {
-      modalidadSelect.innerHTML = `<option value="">No hay modalidades</option>`;
-      return;
-    }
-
-    modalidades.forEach(modalidad => {
-      const option = document.createElement("option");
-      option.value = modalidad;
-      option.textContent = modalidad;
-      modalidadSelect.appendChild(option);
-    });
-  });
-
-
 });
 
 window.generarConstancia = async function (equipo, evento, modalidad) {
@@ -179,11 +115,6 @@ window.generarConstancia = async function (equipo, evento, modalidad) {
     link.click();
   });
 };
-
-
-
-
-
 
 document.addEventListener("DOMContentLoaded", async () => {
   const añoSelect = document.getElementById("año-combobox");
@@ -317,7 +248,10 @@ async function renderizarEquiposConConfig(año, evento, modalidad, equipos) {
 
     contenedorEquipos.appendChild(tarjeta);
   });
-  async function abrirModalEdicion(año, evento, modalidad, equipoId) {
+}
+
+// Modal de edición de equipo
+async function abrirModalEdicion(año, evento, modalidad, equipoId) {
   const configRef = doc(db, `${año}_eventos/${evento}/modalidad/${modalidad}/campos_config/config`);
   const configSnap = await getDoc(configRef);
   if (!configSnap.exists()) {
@@ -332,58 +266,14 @@ async function renderizarEquiposConConfig(año, evento, modalidad, equipos) {
     return;
   }
 
+  equipoEnEdicion = { año, evento, modalidad, equipoId }; // Actualiza el equipo en edición
+
   const datosEquipo = equipoSnap.data();
   const { campos } = configSnap.data();
   const contenedor = document.getElementById("contenedorCamposEditar");
   contenedor.innerHTML = "";
 
-  campos.forEach((campo, i) => {// === GUARDAR CAMBIOS DEL FORMULARIO DE EDICIÓN ===
-const formEditar = document.getElementById("formEditarEquipo");
-formEditar?.addEventListener("submit", async (e) => {
-  e.preventDefault();
-
-  if (!equipoEnEdicion) {
-    mostrarToast("⚠️ No hay equipo seleccionado para editar.", "warning");
-    return;
-  }
-
-  const configRef = doc(db, `${equipoEnEdicion.año}_eventos/${equipoEnEdicion.evento}/modalidad/${equipoEnEdicion.modalidad}/campos_config/config`);
-  const configSnap = await getDoc(configRef);
-  if (!configSnap.exists()) return;
-
-  const { campos } = configSnap.data();
-  const nuevoDoc = {};
-
   campos.forEach((campo, i) => {
-    if (campo.tipo === "lista") {
-      nuevoDoc[campo.nombre] = [];
-      for (let j = 0; j < campo.cantidad; j++) {
-        const val = formEditar[`campo_${i}_${j}`]?.value || "";
-        nuevoDoc[campo.nombre].push(val);
-      }
-    } else {
-      nuevoDoc[campo.nombre] = formEditar[`campo_${i}`]?.value || "";
-    }
-  });
-
-  try {
-    const equipoRef = doc(db, `${equipoEnEdicion.año}_eventos/${equipoEnEdicion.evento}/modalidad/${equipoEnEdicion.modalidad}/equipos/${equipoEnEdicion.equipoId}`);
-    await updateDoc(equipoRef, nuevoDoc);
-    mostrarToast("✅ Equipo actualizado correctamente.", "success");
-    document.getElementById("modalEditarEquipo").classList.add("oculto");
-    document.getElementById("contenedorCamposEditar").innerHTML = "";
-  } catch (err) {
-    console.error("Error al actualizar equipo:", err);
-    mostrarToast("❌ Error al actualizar equipo.", "error");
-  }
-});
-
-// === BOTÓN CANCELAR CIERRA EL MODAL Y LIMPIA CAMPOS ===
-const btnCancelar = document.getElementById("btnCancelarEditar");
-btnCancelar?.addEventListener("click", () => {
-  document.getElementById("modalEditarEquipo").classList.add("oculto");
-  document.getElementById("contenedorCamposEditar").innerHTML = "";
-});
     const div = document.createElement("div");
     div.classList.add("campo-editable");
 
@@ -417,15 +307,9 @@ btnCancelar?.addEventListener("click", () => {
   document.getElementById("modalEditarEquipo").classList.remove("oculto");
 }
 
-
-
-//Boton para cerrar el modal de edición
+// Botón para cerrar el modal de edición
 const btnCancelar = document.getElementById("btnCancelarEditar");
 btnCancelar?.addEventListener("click", () => {
   document.getElementById("modalEditarEquipo").classList.add("oculto");
-
-  // Opcional: limpiar campos del modal
   document.getElementById("contenedorCamposEditar").innerHTML = "";
 });
-
-}
