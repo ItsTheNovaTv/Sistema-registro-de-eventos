@@ -1,19 +1,21 @@
 
-import { db } from './components/Firebase.js';
+import { db } from '../Js/components/Firebase.js';
 import {
   collection,
   getDocs,
   doc,
-  getDoc
+  getDoc,
+  setDoc
 } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+  const formSeleccion = document.getElementById('formSeleccion');
+  const formRegistro = document.getElementById('formDinamico');
+  const contenedor = document.getElementById('contenedorCamposDinamicos');
+
   const selectAnio = document.getElementById('anio');
   const selectEvento = document.getElementById('evento');
   const selectModalidad = document.getElementById('modalidad');
-  const formSeleccion = document.getElementById('formSeleccion');
-  const formDinamico = document.getElementById('formDinamico');
-  const contenedorCampos = document.getElementById('contenedorCamposDinamicos');
 
   let camposConfig = [];
 
@@ -26,11 +28,10 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   selectAnio.addEventListener('change', async () => {
-    const anio = selectAnio.value;
-    selectEvento.innerHTML = '<option value="">Selecciona un evento</option>';
-    selectModalidad.innerHTML = '<option value="">Selecciona una modalidad</option>';
-    const eventosSnapshot = await getDocs(collection(db, `${anio}_eventos`));
-    eventosSnapshot.forEach(doc => {
+    selectEvento.innerHTML = '<option value="">Selecciona evento</option>';
+    selectModalidad.innerHTML = '<option value="">Selecciona modalidad</option>';
+    const snapshot = await getDocs(collection(db, `${selectAnio.value}_eventos`));
+    snapshot.forEach(doc => {
       const opt = document.createElement('option');
       opt.value = doc.id;
       opt.textContent = doc.id;
@@ -39,11 +40,9 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   selectEvento.addEventListener('change', async () => {
-    const anio = selectAnio.value;
-    const evento = selectEvento.value;
-    selectModalidad.innerHTML = '<option value="">Selecciona una modalidad</option>';
-    const modalidadesSnapshot = await getDocs(collection(db, `${anio}_eventos/${evento}/modalidad`));
-    modalidadesSnapshot.forEach(doc => {
+    selectModalidad.innerHTML = '<option value="">Selecciona modalidad</option>';
+    const snapshot = await getDocs(collection(db, `${selectAnio.value}_eventos/${selectEvento.value}/modalidad`));
+    snapshot.forEach(doc => {
       const opt = document.createElement('option');
       opt.value = doc.id;
       opt.textContent = doc.id;
@@ -61,97 +60,104 @@ document.addEventListener('DOMContentLoaded', () => {
     const configSnap = await getDoc(configRef);
 
     if (!configSnap.exists()) {
-      alert('No hay configuración de campos para esta modalidad.');
+      contenedor.innerHTML = '<p>No hay configuración para esta modalidad.</p>';
       return;
     }
 
     const { campos } = configSnap.data();
     camposConfig = campos;
-    contenedorCampos.innerHTML = '';
-    formDinamico.style.display = 'block';
+    contenedor.innerHTML = '';
+    formRegistro.style.display = 'block';
 
     campos.forEach(campo => {
-    
+            const div = document.createElement('div');
+      div.classList.add('campo-dinamico');
 
-    const div = document.createElement('div');
-    div.classList.add('campo-dinamico');
-    div.style.marginBottom = '1rem';
+      const label = document.createElement('label');
+      label.textContent = campo.nombre;
+      div.appendChild(label);
 
-    const label = document.createElement('label');
-    label.textContent = campo.nombre;
-    div.appendChild(label);
-
-    if (campo.tipo === 'lista' && campo.cantidad) {
-      for (let i = 0; i < campo.cantidad; i++) {
+      if (campo.tipo === 'lista' && campo.cantidad) {
+        for (let i = 0; i < campo.cantidad; i++) {
+          const input = document.createElement('input');
+          input.type = 'text';
+          input.name = `${campo.nombre}_${i}`;
+          input.placeholder = `${campo.nombre} ${i + 1}`;
+          input.classList.add('input');
+          if (campo.requerido) input.required = true;
+          div.appendChild(input);
+        }
+      } else if (campo.tipo === 'select' && campo.opciones) {
+        const select = document.createElement('select');
+        select.name = campo.nombre;
+        select.required = campo.requerido;
+        campo.opciones.forEach(op => {
+          const opt = document.createElement('option');
+          opt.value = op;
+          opt.textContent = op;
+          select.appendChild(opt);
+        });
+        select.classList.add('input');
+        div.appendChild(select);
+      } else if (campo.tipo === 'boolean') {
+        const select = document.createElement('select');
+        select.name = campo.nombre;
+        select.required = campo.requerido;
+        ['Sí', 'No'].forEach(op => {
+          const opt = document.createElement('option');
+          opt.value = op;
+          opt.textContent = op;
+          select.appendChild(opt);
+        });
+        select.classList.add('input');
+        div.appendChild(select);
+      } else {
         const input = document.createElement('input');
         input.type = 'text';
-        input.name = `${campo.nombre}_${i}`;
-        input.placeholder = `${campo.nombre} ${i + 1}`;
+        input.name = campo.nombre;
         input.classList.add('input');
-        if (campo.requerido) input.required = true;
+        input.required = campo.requerido;
         div.appendChild(input);
       }
-    } else if (campo.tipo === 'select' && campo.opciones) {
-      const select = document.createElement('select');
-      select.name = campo.nombre;
-      select.required = campo.requerido;
-      campo.opciones.forEach(op => {
-        const opt = document.createElement('option');
-        opt.value = op;
-        opt.textContent = op;
-        select.appendChild(opt);
-      });
-      select.classList.add('input');
-      div.appendChild(select);
-    } else if (campo.tipo === 'boolean') {
-      const select = document.createElement('select');
-      select.name = campo.nombre;
-      select.required = campo.requerido;
-      ['Sí', 'No'].forEach(op => {
-        const opt = document.createElement('option');
-        opt.value = op;
-        opt.textContent = op;
-        select.appendChild(opt);
-      });
-      select.classList.add('input');
-      div.appendChild(select);
-    } else {
-      const input = document.createElement(campo.tipo === 'textarea' ? 'textarea' : 'input');
-      input.type = 'text';
-      input.name = campo.nombre;
-      input.required = campo.requerido;
-      input.classList.add('input');
-      div.appendChild(input);
-      }
 
-    contenedorCampos.appendChild(div);
+      contenedor.appendChild(div);
+    });
   });
 
-  });
-
-  formDinamico.addEventListener('submit', (e) => {
+  formRegistro.addEventListener('submit', async (e) => {
     e.preventDefault();
 
     const datos = {};
     camposConfig.forEach(campo => {
-      if (campo.tipo === 'lista' && campo.cantidad) {
+      if (campo.nombre === "Participación") return;
+
+      if (campo.tipo === 'lista') {
         const valores = [];
         for (let i = 0; i < campo.cantidad; i++) {
-          const input = formDinamico.querySelector(`[name="${campo.nombre}_${i}"]`);
-          if (input && input.value.trim()) {
-            valores.push(input.value.trim());
-          }
+          const input = formRegistro.querySelector(`[name="${campo.nombre}_${i}"]`);
+          if (input?.value.trim()) valores.push(input.value.trim());
         }
         datos[campo.nombre] = valores;
       } else {
-        const input = formDinamico.elements[campo.nombre];
-        if (input) {
-          datos[campo.nombre] = input.value.trim();
-        }
+        const val = formRegistro.elements[campo.nombre]?.value.trim();
+        datos[campo.nombre] = val;
       }
     });
 
-    console.log("📤 Datos recopilados para guardar:", datos);
-    alert('✅ Datos preparados para guardar. (Guardar real aún no implementado)');
+    try {
+      const ruta = `${selectAnio.value}_eventos/${selectEvento.value}/modalidad/${selectModalidad.value}/equipos`;
+      const ref = collection(db, ruta);
+      const snapshot = await getDocs(ref);
+      const ids = snapshot.docs.map(doc => parseInt(doc.id)).filter(n => !isNaN(n));
+      const nuevoId = (ids.length > 0 ? Math.max(...ids) + 1 : 1).toString().padStart(4, "0");
+
+      await setDoc(doc(db, ruta, nuevoId), datos);
+      alert("✅ Equipo registrado correctamente con ID " + nuevoId);
+      formRegistro.reset();
+      formRegistro.style.display = "none";
+    } catch (err) {
+      console.error("Error al registrar equipo:", err);
+      alert("❌ Error al registrar equipo.");
+    }
   });
 });

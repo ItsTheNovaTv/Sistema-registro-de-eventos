@@ -92,13 +92,17 @@
 
 
 
- <form id="formEditarEquipo">
-  <div id="contenedorCamposEditar"></div>
-  <div class="modal-acciones">
-    <button type="button" id="btnCancelarEditar">Cancelar</button>
-    <button type="submit" class="boton-principal">Guardar cambios</button>
-  </div>
-</form>
+ <!-- MODAL DE EDICIÓN (al final del <body>) -->
+<div id="modalEditarEquipo" class="modal-backdrop oculto">
+  <form id="formEditarEquipo" class="modal-box">
+    <div id="contenedorCamposEditar"></div>
+    <div class="modal-acciones">
+      <button type="button" id="btnCancelarEditar" class="boton-secundario">Cancelar</button>
+      <button type="submit" class="boton-principal">Guardar cambios</button>
+    </div>
+  </form>
+</div>
+
 
 </div>
 

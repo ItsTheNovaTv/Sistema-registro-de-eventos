@@ -316,3 +316,71 @@ button{
   justify-content: space-between;
   align-items: center;
 }
+/* Contenedor general del formulario dinámico */
+#formDinamico {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+/* Campo individual del formulario */
+.campo-dinamico {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  gap: 0.5rem;
+}
+
+/* Etiquetas claras y consistentes */
+.campo-dinamico label {
+  font-weight: 600;
+  color: #444;
+  margin-bottom: 0.25rem;
+}
+
+/* Inputs uniformes */
+.campo-dinamico input,
+.campo-dinamico select,
+.campo-dinamico textarea {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+/* Soporte para listas internas */
+.campo-dinamico .lista-campos input {
+  margin-bottom: 0.5rem;
+}
+
+/* Botón registrar consistente */
+#formDinamico .boton-principal {
+  align-self: flex-start;
+}
+/* Estilo para checkbox dentro de .campo-dinamico */
+.campo-dinamico input[type="checkbox"] {
+  width: auto;
+  margin-right: 0.5rem;
+  accent-color: #197cc8; /* color azul institucional */
+  transform: scale(1.2);
+  cursor: pointer;
+}
+
+/* Alinear checkbox con etiqueta */
+.campo-dinamico label.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 500;
+  color: #444;
+  user-select: none;
+}
+
+/* Mejora en hover */
+.campo-dinamico input[type="checkbox"]:hover {
+  outline: 2px solid #197cc8;
+  outline-offset: 2px;
+}

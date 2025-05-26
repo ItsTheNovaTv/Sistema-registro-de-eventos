@@ -21,22 +21,29 @@
 
         <div class="stat-box">
           <form id="formRegistroUsuario">
-            <label>Correo electrónico:</label>
-            <input type="email" name="correo" class="input" required />
-
-            <label>Contraseña:</label>
-            <input type="password" name="password" class="input" required />
-
-            <label>Nombre completo:</label>
-            <input type="text" name="nombre" class="input" required />
-
-            <label>¿Es administrador?</label>
-            <input type="checkbox" name="admin" />
-
-            <div style="margin-top: 2rem;">
-              <button type="submit" class="boton-principal">Registrar</button>
+            <div class="campo-form">
+              <label>Correo electrónico:</label>
+              <input type="email" name="correo" class="input" required />
             </div>
+
+            <div class="campo-form">
+              <label>Contraseña:</label>
+              <input type="password" name="password" class="input" required />
+            </div>
+
+            <div class="campo-form">
+              <label>Nombre completo:</label>
+              <input type="text" name="nombre" class="input" required />
+            </div>
+
+            <label class="checkbox-label">
+              <input type="checkbox" name="admin" />
+              ¿Es administrador?
+            </label>
+
+            <button type="submit" class="boton-principal">Registrar</button>
           </form>
+
         </div>
 
             <h2 style="margin-bottom: 1.5rem; color: #197cc8;">Usuarios registrados</h2>

@@ -3,6 +3,7 @@ import {
     collection,
     getDocs
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+let datosEventos = [];
 
 async function obtenerAños() {
     const añoInicio = 2020;

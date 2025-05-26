@@ -64,4 +64,53 @@
     background-color: #125d94; /* tono más oscuro al pasar el mouse */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
   }
-  
+  /* Contenedor general del formulario */
+#formRegistroUsuario {
+  display: flex;
+  flex-direction: row;
+  gap: 1.5rem;
+  padding: 2rem;
+  background-color: #fdfdfd;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+}
+
+/* Inputs bien alineados */
+#formRegistroUsuario label {
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 0.3rem;
+}
+
+#formRegistroUsuario input[type="text"],
+#formRegistroUsuario input[type="email"],
+#formRegistroUsuario input[type="password"] {
+  width: 100%;
+  padding: 0.6rem 1rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+/* Checkbox con diseño mejorado */
+#formRegistroUsuario .checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 500;
+  user-select: none;
+}
+
+#formRegistroUsuario input[type="checkbox"] {
+  width: auto;
+  accent-color: #197cc8;
+  transform: scale(1.2);
+  cursor: pointer;
+}
+
+/* Botón con margen automático */
+#formRegistroUsuario .boton-principal {
+  align-self: flex-start;
+  margin-top: 1rem;
+}

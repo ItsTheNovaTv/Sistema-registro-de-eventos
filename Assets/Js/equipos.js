@@ -4,7 +4,7 @@ import {
   obtenerModalidades,
   obtenerEquipos
 } from "./components/consultas.js";
-
+import { mostrarToast } from "./components/toast.js";
 import {
   doc,
   getDoc,
@@ -15,16 +15,12 @@ import {
 let equipoEnEdicion = null; // al inicio del archivo
 
 import { db } from "../Js/components/Firebase.js";
-
-// 🔹 Renderizar equipos con configuración dinámica
+// forma de edición de equipo
 const formEditar = document.getElementById("formEditarEquipo");
 formEditar?.addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  if (!equipoEnEdicion) {
-    mostrarToast("⚠️ No hay equipo seleccionado para editar.", "warning");
-    return;
-  }
+  if (!equipoEnEdicion) return;
 
   const configRef = doc(db, `${equipoEnEdicion.año}_eventos/${equipoEnEdicion.evento}/modalidad/${equipoEnEdicion.modalidad}/campos_config/config`);
   const configSnap = await getDoc(configRef);
@@ -50,12 +46,14 @@ formEditar?.addEventListener("submit", async (e) => {
     await updateDoc(equipoRef, nuevoDoc);
     mostrarToast("✅ Equipo actualizado correctamente.", "success");
     document.getElementById("modalEditarEquipo").classList.add("oculto");
-    document.getElementById("contenedorCamposEditar").innerHTML = ""; // Limpia campos al guardar
+    document.getElementById("contenedorCamposEditar").innerHTML = "";
+    document.getElementById("btnUsuariosFiltro").click(); // Recarga la vista
   } catch (err) {
     console.error("Error al actualizar equipo:", err);
     mostrarToast("❌ Error al actualizar equipo.", "error");
   }
 });
+
 
 window.generarConstancia = async function (equipo, evento, modalidad) {
   const integrantes = Array.isArray(equipo.Integrantes) ? equipo.Integrantes : [];
@@ -254,19 +252,11 @@ async function renderizarEquiposConConfig(año, evento, modalidad, equipos) {
 async function abrirModalEdicion(año, evento, modalidad, equipoId) {
   const configRef = doc(db, `${año}_eventos/${evento}/modalidad/${modalidad}/campos_config/config`);
   const configSnap = await getDoc(configRef);
-  if (!configSnap.exists()) {
-    mostrarToast("❌ No se encontró la configuración de la modalidad.", "error");
-    return;
-  }
+  if (!configSnap.exists()) return;
 
   const equipoRef = doc(db, `${año}_eventos/${evento}/modalidad/${modalidad}/equipos/${equipoId}`);
   const equipoSnap = await getDoc(equipoRef);
-  if (!equipoSnap.exists()) {
-    mostrarToast("❌ No se encontró el equipo.", "error");
-    return;
-  }
-
-  equipoEnEdicion = { año, evento, modalidad, equipoId }; // Actualiza el equipo en edición
+  if (!equipoSnap.exists()) return;
 
   const datosEquipo = equipoSnap.data();
   const { campos } = configSnap.data();
@@ -276,40 +266,38 @@ async function abrirModalEdicion(año, evento, modalidad, equipoId) {
   campos.forEach((campo, i) => {
     const div = document.createElement("div");
     div.classList.add("campo-editable");
+    let html = `<label>${campo.nombre}:</label>`;
 
-    if (campo.tipo === "text" || campo.tipo === "boolean") {
-      div.innerHTML = `
-        <label>${campo.nombre}:</label>
-        <input type="text" name="campo_${i}" class="input" value="${datosEquipo[campo.nombre] || ''}" />
-      `;
-    } else if (campo.tipo === "select") {
-      div.innerHTML = `
-        <label>${campo.nombre}:</label>
-        <select name="campo_${i}" class="input">
-          ${campo.opciones.map(op => `<option value="${op}" ${datosEquipo[campo.nombre] === op ? 'selected' : ''}>${op}</option>`).join('')}
-        </select>
-      `;
+    if (campo.tipo === "select") {
+      html += `<select name="campo_${i}" class="input">`;
+      campo.opciones.forEach(op => {
+        const selected = datosEquipo[campo.nombre] === op ? 'selected' : '';
+        html += `<option value="${op}" ${selected}>${op}</option>`;
+      });
+      html += `</select>`;
     } else if (campo.tipo === "lista") {
-      div.innerHTML = `
-        <label>${campo.nombre}:</label>
-        <div class="lista-campos" style="display: flex; flex-direction: column; gap: 5px;">
-          ${[...Array(campo.cantidad)].map((_, j) => {
-            const val = Array.isArray(datosEquipo[campo.nombre]) ? (datosEquipo[campo.nombre][j] || '') : '';
-            return `<input type="text" name="campo_${i}_${j}" class="input" value="${val}" />`;
-          }).join('')}
-        </div>
-      `;
+      html += `<div style="display:flex;flex-direction:column;gap:5px;">`;
+      for (let j = 0; j < campo.cantidad; j++) {
+        const val = Array.isArray(datosEquipo[campo.nombre]) ? (datosEquipo[campo.nombre][j] || '') : '';
+        html += `<input type="text" class="input" name="campo_${i}_${j}" value="${val}" />`;
+      }
+      html += `</div>`;
+    } else {
+      const val = datosEquipo[campo.nombre] || "";
+      html += `<input type="text" name="campo_${i}" class="input" value="${val}" />`;
     }
 
+    div.innerHTML = html;
     contenedor.appendChild(div);
   });
 
+  equipoEnEdicion = { año, evento, modalidad, equipoId };
   document.getElementById("modalEditarEquipo").classList.remove("oculto");
 }
 
+
 // Botón para cerrar el modal de edición
-const btnCancelar = document.getElementById("btnCancelarEditar");
-btnCancelar?.addEventListener("click", () => {
+document.getElementById("btnCancelarEditar")?.addEventListener("click", () => {
   document.getElementById("modalEditarEquipo").classList.add("oculto");
   document.getElementById("contenedorCamposEditar").innerHTML = "";
 });

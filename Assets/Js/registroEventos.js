@@ -1,5 +1,5 @@
 import { db } from './components/Firebase.js';
-import { doc, setDoc, getDoc, collection, getDocs } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
+import { doc, setDoc, getDoc, collection, getDocs, deleteDoc} from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
 
 import { mostrarToast } from './components/toast.js';
 
@@ -52,8 +52,9 @@ document.addEventListener('DOMContentLoaded', () => {
       </select>
 
       <label>¿Es requerido?</label>
+      <label class="checkbox-label">
       <input type="checkbox" name="campo_requerido_${contador}" ${requerido ? "checked" : ""} />
-
+      </label>
       <button type="button" class="boton-secundario eliminar-campo" style="margin-top: 0.5rem;">Eliminar este campo</button>
 
       <div class="opciones-select" style="display: ${tipo === 'select' ? 'block' : 'none'}; margin-top: 1rem; margin-bottom: 1rem; margin-left: 3rem;">
@@ -130,47 +131,46 @@ document.addEventListener('DOMContentLoaded', () => {
     const modalidad = inputModalidad.value.trim().toLowerCase().replace(/\s+/g, '_');
     const campos = [];
 
-    const bloques = contenedorCampos.querySelectorAll('.campo-dinamico');
-    bloques.forEach((bloque, i) => {
-      const nombre = formulario[`campo_nombre_${i}`]?.value;
-      const tipo = formulario[`campo_tipo_${i}`]?.value;
-      const requerido = formulario[`campo_requerido_${i}`]?.checked || false;
-      if (!nombre || !tipo) return;
-      const campo = { nombre, tipo, requerido };
+const bloques = contenedorCampos.querySelectorAll('.campo-dinamico');
+bloques.forEach(bloque => {
+  const inputNombre = bloque.querySelector('input[name^="campo_nombre_"]');
+  const selectTipo = bloque.querySelector('select[name^="campo_tipo_"]');
+  const checkRequerido = bloque.querySelector('input[type="checkbox"]');
 
-      if (tipo === 'select') {
-        const inputs = bloque.querySelectorAll('.opcion-select');
-        const opciones = Array.from(inputs).map(inp => inp.value.trim()).filter(val => val !== '');
-        if (opciones.length === 0) {
-          mostrarToast(`⚠️ El campo "${nombre}" necesita al menos una opción válida.`, 'warning');
-          return;
-        }
-        campo.opciones = opciones;
-      }
+  const nombre = inputNombre?.value.trim();
+  const tipo = selectTipo?.value;
+  const requerido = checkRequerido?.checked || false;
 
-      if (tipo === 'lista') {
-        const cantidad = parseInt(formulario[`campo_cantidad_${i}`]?.value);
-        if (isNaN(cantidad) || cantidad < 1) {
-          alert(`⚠️ El campo "${nombre}" debe tener una cantidad válida mayor a 0.`);
-          return;
-        }
-        campo.cantidad = cantidad;
-      }
+  if (!nombre || !tipo) return;
 
-      campos.push(campo);
-    });
+  const campo = { nombre, tipo, requerido };
 
-    const rutaCampos = `${anio}_eventos/${evento}/modalidad/${modalidad}/campos_config/config`;
-    const docRef = doc(db, rutaCampos);
-    const existente = await getDoc(docRef);
-    if (existente.exists()) {
-      const confirmar = confirm("⚠️ Esta modalidad ya tiene una configuración. ¿Deseas sobrescribirla?");
-      if (!confirmar) {
-        mostrarToast('❌ Operación cancelada.', 'error');
-        return;
-      }
+  if (tipo === 'select') {
+    const opciones = Array.from(bloque.querySelectorAll('.opcion-select'))
+      .map(inp => inp.value.trim())
+      .filter(val => val !== '');
+    if (opciones.length === 0) {
+      mostrarToast(`⚠️ El campo "${nombre}" necesita al menos una opción válida.`, 'warning');
+      return;
     }
+    campo.opciones = opciones;
+  }
 
+  if (tipo === 'lista') {
+    const inputCantidad = bloque.querySelector('input[name^="campo_cantidad_"]');
+    const cantidad = parseInt(inputCantidad?.value);
+    if (isNaN(cantidad) || cantidad < 1) {
+      mostrarToast(`⚠️ El campo "${nombre}" debe tener una cantidad válida mayor a 0.`, 'warning');
+      return;
+    }
+    campo.cantidad = cantidad;
+  }
+
+  campos.push(campo);
+});
+
+
+    
     const eventoRef = doc(db, `${anio}_eventos/${evento}`);
     const eventoDoc = await getDoc(eventoRef);
     if (!eventoDoc.exists()) {
@@ -187,32 +187,39 @@ document.addEventListener('DOMContentLoaded', () => {
       await setDoc(modalidadRef, { activo: true });
     }
 
-    await setDoc(docRef, { campos });
-    mostrarToast('✅ Configuración guardada correctamente.',"success");
-    formulario.reset();
-    contenedorCampos.innerHTML = '';
-    contador = 0;
-  });
+        // 🔥 Limpiar config si ya existía y volver a guardar desde cero
+      const docRef = doc(db, `${anio}_eventos/${evento}/modalidad/${modalidad}/campos_config/config`);
+      const existente = await getDoc(docRef);
+      if (existente.exists()) {
+        await deleteDoc(docRef);
+      }
+      // Guarda la nueva configuración directamente
+      await setDoc(docRef, { campos });
 
-  const btnLimpiar = document.getElementById('limpiarCampos');
-  btnLimpiar.addEventListener('click', (e) => {
-    e.preventDefault();
-    contenedorCampos.innerHTML = '';
-    formulario.reset();
-    contador = 0;
-  });
-
-  async function cargarEventos(año) {
-    const eventosRef = collection(db, `${año}_eventos`);
-    const snapshot = await getDocs(eventosRef);
-    const lista = document.getElementById("eventosList");
-    if (!lista) return;
-    lista.innerHTML = "";
-    snapshot.forEach(doc => {
-      const option = document.createElement("option");
-      option.value = doc.id;
-      lista.appendChild(option);
+      mostrarToast('✅ Configuración guardada correctamente.',"success");
+      formulario.reset();
+      contenedorCampos.innerHTML = '';
+      contador = 0;
     });
+
+    const btnLimpiar = document.getElementById('limpiarCampos');
+    btnLimpiar.addEventListener('click', (e) => {
+      e.preventDefault();
+      contenedorCampos.innerHTML = '';
+      formulario.reset();
+      contador = 0;
+    });
+    async function cargarEventos(año) {
+      const eventosRef = collection(db, `${año}_eventos`);
+      const snapshot = await getDocs(eventosRef);
+      const lista = document.getElementById("eventosList");
+      if (!lista) return;
+      lista.innerHTML = "";
+      snapshot.forEach(doc => {
+        const option = document.createElement("option");
+        option.value = doc.id;
+        lista.appendChild(option);
+      });
   }
 
   async function cargarModalidades(año, evento) {
