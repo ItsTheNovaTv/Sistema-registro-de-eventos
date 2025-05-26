@@ -5,7 +5,7 @@ import {
   getDocs,
   doc,
   getDoc,
-  addDoc
+  setDoc
 } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -19,7 +19,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   let camposConfig = [];
 
-  // Llenar selector de años
   const anioActual = new Date().getFullYear();
   for (let y = anioActual; y >= 2023; y--) {
     const option = document.createElement('option');
@@ -28,7 +27,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     selectAnio.appendChild(option);
   }
 
-  // Al cambiar año → cargar eventos
   selectAnio.addEventListener('change', async () => {
     selectEvento.innerHTML = '<option value="">Selecciona evento</option>';
     selectModalidad.innerHTML = '<option value="">Selecciona modalidad</option>';
@@ -41,7 +39,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   });
 
-  // Al cambiar evento → cargar modalidades
   selectEvento.addEventListener('change', async () => {
     selectModalidad.innerHTML = '<option value="">Selecciona modalidad</option>';
     const snapshot = await getDocs(collection(db, `${selectAnio.value}_eventos/${selectEvento.value}/modalidad`));
@@ -53,7 +50,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   });
 
-  // Cargar formulario dinámico según config
   formSeleccion.addEventListener('submit', async (e) => {
     e.preventDefault();
     const anio = selectAnio.value;
@@ -130,7 +126,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   });
 
-  // Guardar registro en Firestore
   formRegistro.addEventListener('submit', async (e) => {
     e.preventDefault();
 
@@ -153,8 +148,13 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     try {
       const ruta = `${selectAnio.value}_eventos/${selectEvento.value}/modalidad/${selectModalidad.value}/equipos`;
-      await addDoc(collection(db, ruta), datos);
-      alert("✅ Equipo registrado correctamente.");
+      const ref = collection(db, ruta);
+      const snapshot = await getDocs(ref);
+      const ids = snapshot.docs.map(doc => parseInt(doc.id)).filter(n => !isNaN(n));
+      const nuevoId = (ids.length > 0 ? Math.max(...ids) + 1 : 1).toString().padStart(4, "0");
+
+      await setDoc(doc(db, ruta, nuevoId), datos);
+      alert("✅ Equipo registrado correctamente con ID " + nuevoId);
       formRegistro.reset();
       formRegistro.style.display = "none";
     } catch (err) {
