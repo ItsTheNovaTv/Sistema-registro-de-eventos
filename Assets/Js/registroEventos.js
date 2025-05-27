@@ -205,13 +205,13 @@ bloques.forEach(bloque => {
       contador = 0;
     });
 
-    const btnLimpiar = document.getElementById('limpiarCampos');
+    /*const btnLimpiar = document.getElementById('limpiarCampos');
     btnLimpiar.addEventListener('click', (e) => {
       e.preventDefault();
       contenedorCampos.innerHTML = '';
       formulario.reset();
       contador = 0;
-    });
+    });*/
     async function cargarEventos(año) {
       const eventosRef = collection(db, `${año}_eventos`);
       const snapshot = await getDocs(eventosRef);

@@ -122,7 +122,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const btnBuscar = document.getElementById("btnUsuariosFiltro");
 
   const años = await obtenerAños();
-  años.forEach(año => {
+  años.reverse().forEach(año => {
     const option = document.createElement("option");
     option.value = año;
     option.textContent = año;

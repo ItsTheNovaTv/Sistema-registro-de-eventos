@@ -1,39 +1,79 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>eventos</title>
-      <link rel="stylesheet" href="/Assets/styles/inicio.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Control de Eventos</title>
+  <link rel="stylesheet" href="/Assets/styles/inicio.css">
   <link rel="stylesheet" href="/Assets/styles/usuarios.css">
+  <style>
+    /* Estilos sugeridos para las tarjetas */
+    .modalidad-card, .equipo-card {
+      border: 1px solid #ccc;
+      border-radius: 12px;
+      padding: 1.2rem;
+      margin-bottom: 1rem;
+      background: #f9fbfd;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+
+    .modalidad-card h3,
+    .equipo-card h4 {
+      color: #197cc8;
+      margin-bottom: 0.5rem;
+    }
+
+    .checkbox-label {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+
+    select {
+      padding: 0.3rem;
+      margin-left: 0.5rem;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+  </style>
 </head>
+
 <body>
-    <header id="header"></header>
-    <div class="layout">   
-        <aside id="sidebar"></aside>
+  <header id="header"></header>
+  <div class="layout">
+    <aside id="sidebar"></aside>
 
-        <main class="main-content">
-            <h1>Eventos</h1>
-            <p>Aqui sera el control de los eventos, se podra marcar a los equipos con asistencia, ganadores o agregar comentarios.</p>
+    <main class="main-content">
+      <h1 style="color:#197cc8;">Control de eventos y modalidades</h1>
+      <p>
+        Aquí podrás activar o desactivar modalidades, así como registrar ganadores, asistencia u otras participaciones en los equipos si la modalidad contiene el campo <strong>Participación</strong>.
+      </p>
 
-            <section class="module usuario-card">
-                <p><strong>Filtros </strong>
-                    <select name="año-combobox" id="año-combobox">
-                        <option value="">Selecciona año</option>
-                    </select>
-                    <select name="evento-combobox" id="evento-combobox">
-                        <option value="">Selecciona evento</option>
-                    </select>
-                    <select name="modalidad-combobox" id="modalidad-combobox">
-                        <option value="">Selecciona modalidad</option>
-                    </select>
-                    <button id="btnUsuariosFiltro">Buscar</button>
-                </p>
-            </section>
+      <section class="module usuario-card">
+        <strong>Filtros:</strong>
+        <div style="display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 0.5rem;">
+          <select name="año-combobox" id="año-combobox" class="input">
+            <option value="">Selecciona año</option>
+          </select>
+          <select name="evento-combobox" id="evento-combobox" class="input">
+            <option value="">Selecciona evento</option>
+          </select>
+          <select name="modalidad-combobox" id="modalidad-combobox" class="input">
+            <option value="">Selecciona modalidad</option>
+          </select>
+          <button id="btnUsuariosFiltro" class="boton-principal">Buscar</button>
+        </div>
+      </section>
 
-            <section id="contenedor-equipos" class="module-body"></section>
-        </main>
-    <script type="module" src="components/loadComponentes.js"></script>
-    <script type="module" src="../Js/components/proteccionSesion.js"></script>
+      <section id="contenedor-equipos" class="module-body">
+        <!-- Aquí aparecerán las tarjetas de modalidades y equipos -->
+      </section>
+    </main>
+  </div>
+
+  <script type="module" src="components/loadComponentes.js"></script>
+  <script type="module" src="../Js/components/proteccionSesion.js"></script>
+  <script type="module" src="../Js/controlEventos.js"></script>
 </body>
 </html>
