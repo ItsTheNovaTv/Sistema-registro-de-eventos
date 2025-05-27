@@ -30,13 +30,25 @@ formEditar?.addEventListener("submit", async (e) => {
   const nuevoDoc = {};
 
   campos.forEach((campo, i) => {
-    if (campo.tipo === "lista") {
-      nuevoDoc[campo.nombre] = [];
-      for (let j = 0; j < campo.cantidad; j++) {
-        const val = formEditar[`campo_${i}_${j}`]?.value || "";
-        nuevoDoc[campo.nombre].push(val);
-      }
-    } else {
+ if (campo.tipo === "lista") {
+  nuevoDoc[campo.nombre] = [];
+
+  // Campos base definidos por config
+  for (let j = 0; j < campo.cantidad; j++) {
+    const val = formEditar[`campo_${i}_${j}`]?.value || "";
+    nuevoDoc[campo.nombre].push(val);
+  }
+
+  // Campos extra (excepciones)
+ // Capturar todos los inputs adicionales del mismo campo
+const extras = formEditar.querySelectorAll(`[name^="campo_${i}_extra_"]`);
+extras.forEach(extraInput => {
+  const val = extraInput.value.trim();
+  if (val) nuevoDoc[campo.nombre].push(val);
+});
+
+}
+    else {
       nuevoDoc[campo.nombre] = formEditar[`campo_${i}`]?.value || "";
     }
   });
@@ -277,8 +289,11 @@ async function abrirModalEdicion(año, evento, modalidad, equipoId) {
       html += `</select>`;
     } else if (campo.tipo === "lista") {
       html += `<div style="display:flex;flex-direction:column;gap:5px;">`;
-      for (let j = 0; j < campo.cantidad; j++) {
-        const val = Array.isArray(datosEquipo[campo.nombre]) ? (datosEquipo[campo.nombre][j] || '') : '';
+      const valoresLista = Array.isArray(datosEquipo[campo.nombre]) ? datosEquipo[campo.nombre] : [];
+      const cantidadReal = Math.max(campo.cantidad, valoresLista.length);
+
+      for (let j = 0; j < cantidadReal; j++) {
+        const val = valoresLista[j] || '';
         html += `<input type="text" class="input" name="campo_${i}_${j}" value="${val}" />`;
       }
       html += `</div>`;
@@ -294,6 +309,98 @@ async function abrirModalEdicion(año, evento, modalidad, equipoId) {
   equipoEnEdicion = { año, evento, modalidad, equipoId };
   document.getElementById("modalEditarEquipo").classList.remove("oculto");
 }
+
+// Crear botón de excepción
+const btnExcepcion = document.createElement("button");
+btnExcepcion.textContent = "Incluir excepción";
+btnExcepcion.className = "boton-secundario";
+btnExcepcion.type = "button";
+btnExcepcion.style.marginTop = "1rem";
+formEditar.appendChild(btnExcepcion);
+
+// Activar funcionalidad al hacer clic
+btnExcepcion.addEventListener("click", () => {
+  const bloques = formEditar.querySelectorAll(".campo-editable");
+
+  bloques.forEach((bloque, i) => {
+    const label = bloque.querySelector("label");
+    const input = bloque.querySelector("input, select");
+
+    if (!label || !input) return;
+
+    // LISTA - más integrantes
+    if (input.name.includes("_0") && input.name.includes("campo_") && bloque.querySelectorAll("input").length > 1) {
+      const contenedorLista = bloque.querySelector("div");
+      if (!contenedorLista || bloque.querySelector(".acciones-lista")) return;
+
+      const btnAdd = document.createElement("button");
+      const btnRemove = document.createElement("button");
+      btnAdd.textContent = "+";
+      btnRemove.textContent = "−";
+      btnAdd.type = btnRemove.type = "button";
+      btnAdd.className = btnRemove.className = "boton-secundario";
+      btnAdd.style.marginRight = "5px";
+
+      const acciones = document.createElement("div");
+      acciones.classList.add("acciones-lista");
+      acciones.style.marginTop = "5px";
+      acciones.appendChild(btnAdd);
+      acciones.appendChild(btnRemove);
+      bloque.appendChild(acciones);
+
+      btnAdd.addEventListener("click", () => {
+        const nuevo = document.createElement("input");
+        nuevo.type = "text";
+        const cantidadActual = contenedorLista.querySelectorAll("input").length;
+        nuevo.name = `campo_${i}_extra_${cantidadActual}`;
+        nuevo.placeholder = "Integrante adicional";
+        contenedorLista.appendChild(nuevo);
+      });
+
+      btnRemove.addEventListener("click", () => {
+        const inputs = contenedorLista.querySelectorAll("input");
+        if (inputs.length > 0) contenedorLista.removeChild(inputs[inputs.length - 1]);
+      });
+    }
+
+    // SELECT - más opciones
+    if (input.tagName === "SELECT" && !bloque.querySelector(".excepcion-select")) {
+      const contenedor = document.createElement("div");
+      contenedor.className = "excepcion-select";
+      contenedor.style.display = "flex";
+      contenedor.style.gap = "0.5rem";
+      contenedor.style.marginTop = "0.5rem";
+
+      const inputExtra = document.createElement("input");
+      inputExtra.type = "text";
+      inputExtra.placeholder = "Nueva opción personalizada";
+      inputExtra.className = "input excepcion-input";
+
+      const btnAdd = document.createElement("button");
+      btnAdd.textContent = "+ Agregar opción";
+      btnAdd.type = "button";
+      btnAdd.className = "boton-secundario";
+
+      contenedor.appendChild(inputExtra);
+      contenedor.appendChild(btnAdd);
+      bloque.appendChild(contenedor);
+
+      btnAdd.addEventListener("click", () => {
+        const nueva = inputExtra.value.trim();
+        if (nueva !== "") {
+          const opt = document.createElement("option");
+          opt.value = nueva;
+          opt.textContent = nueva;
+          input.appendChild(opt);
+          input.value = nueva;
+          inputExtra.value = "";
+        }
+      });
+    }
+  });
+});
+
+
 
 
 // Botón para cerrar el modal de edición
