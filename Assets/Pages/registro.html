@@ -26,9 +26,11 @@
                 
                 <div class="stat-box">
                     <form id="formRegistroEvento">
-                    <label>Año del evento:</label>
-                    <input type="number" name="anio" value="2025" required class="input">
-
+                    <label for="anio">Año:</label>
+                    <select name="anio" id="anio" class="input" required>
+                        <option value="">Cargando años...</option>
+                    </select>
+                    
                     <label>Nombre del evento:</label>
                     <input list="eventosList" name="evento" required class="input">
                     <datalist id="eventosList"></datalist>

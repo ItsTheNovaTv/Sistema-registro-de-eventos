@@ -1,16 +1,11 @@
-
 import { db } from './Firebase.js';
 import { collection, getDocs } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
 
-// Cargar usuarios desde Firestore y mostrarlos en el contenedor
-// Asegúrate de que el contenedor tenga el ID 'contenedorUsuarios' en tu HTML
-// y que el script de Firebase esté correctamente importado.
-// Este script se ejecutará cuando el DOM esté completamente cargado
-// y listo para ser manipulado.
-document.addEventListener('DOMContentLoaded', async () => {
+export async function cargarUsuarios() {
   const contenedor = document.getElementById('contenedorUsuarios');
-
   if (!contenedor) return;
+
+  contenedor.innerHTML = ''; // Limpiar contenido previo
 
   try {
     const snapshot = await getDocs(collection(db, 'usuarios'));
@@ -29,7 +24,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         <p><strong>ID:</strong> ${doc.id}</p>
         <p><strong>Rol:</strong> ${usuario.admin ? 'Administrador' : 'Usuario'}</p>
         <footer class="usuario-footer" style="margin-top: 1rem; display: flex; justify-content: flex-end; gap: 0.5rem;">
-          <!-- Botones futuros aquí -->
         </footer>
       `;
 
@@ -39,4 +33,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     console.error('Error al cargar usuarios:', error);
     contenedor.innerHTML = '<p>Ocurrió un error al cargar los usuarios.</p>';
   }
-});
+}
+
+// Ejecutar cuando cargue el DOM
+document.addEventListener('DOMContentLoaded', cargarUsuarios);

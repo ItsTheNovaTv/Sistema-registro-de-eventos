@@ -1,13 +1,16 @@
 import { db } from './components/Firebase.js';
 import { doc, setDoc, getDoc, collection, getDocs, deleteDoc} from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
+import { obtenerAños } from './components/consultas.js';
 
 import { mostrarToast } from './components/toast.js';
 
 document.addEventListener('DOMContentLoaded', () => {
+  
+
   const contenedorCampos = document.getElementById('contenedorCampos');
   const btnAgregarCampo = document.getElementById('agregarCampo');
   const formulario = document.getElementById('formRegistroEvento');
-  const inputAnio = formulario.anio;
+  const inputAnio = document.getElementById('anio');
   const inputEvento = formulario.evento;
   const inputModalidad = formulario.modalidad;
   inputModalidad.addEventListener("input", async () => {
@@ -353,4 +356,23 @@ function mostrarModalConfirmacion(mensaje, callbackAceptar) {
       mostrarToast("❌ Ocurrió un error al registrar el evento o modalidad.", "error");
     }
   });
+async function cargarUltimoAño() {
+  const años = await obtenerAños();
+  if (años.length === 0) return;
+
+  inputAnio.innerHTML = '<option value="">Selecciona año</option>';
+
+  años.reverse().forEach(año => {
+    const opt = document.createElement("option");
+    opt.value = año;
+    opt.textContent = año;
+    inputAnio.appendChild(opt);
+  });
+
+  inputAnio.value = años[años.length - 1]; // Último año (el más reciente)
+  await cargarEventos(inputAnio.value);
+}
+
+cargarUltimoAño();
+
 });

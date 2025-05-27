@@ -7,6 +7,7 @@ import {
   getDoc,
   setDoc
 } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
+import { obtenerAños } from './components/consultas.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
   const formSeleccion = document.getElementById('formSeleccionPublica');
@@ -19,14 +20,17 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   let camposConfig = [];
 
-  const anioActual = new Date().getFullYear();
-  for (let y = anioActual; y >= 2023; y--) {
+async function cargarAños() {
+  const años = await obtenerAños();
+  selectAnio.innerHTML = '<option value="">Selecciona año</option>';
+  años.reverse().forEach(año => {
     const option = document.createElement('option');
-    option.value = y;
-    option.textContent = y;
+    option.value = año;
+    option.textContent = año;
     selectAnio.appendChild(option);
-  }
-
+  });
+}
+  //al cargar años, cargar los eventos del año actual
   selectAnio.addEventListener('change', async () => {
     selectEvento.innerHTML = '<option value="">Selecciona evento</option>';
     selectModalidad.innerHTML = '<option value="">Selecciona modalidad</option>';
@@ -162,4 +166,6 @@ document.addEventListener('DOMContentLoaded', async () => {
       alert("❌ Error al registrar equipo.");
     }
   });
+  await cargarAños();
+
 });

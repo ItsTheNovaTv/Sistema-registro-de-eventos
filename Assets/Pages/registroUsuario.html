@@ -21,6 +21,12 @@
 
         <div class="stat-box">
           <form id="formRegistroUsuario">
+
+            <div class="campo-form">
+              <label>Nombre completo:</label>
+              <input type="text" name="nombre" class="input" required />
+            </div>
+
             <div class="campo-form">
               <label>Correo electrónico:</label>
               <input type="email" name="correo" class="input" required />
@@ -30,15 +36,19 @@
               <label>Contraseña:</label>
               <input type="password" name="password" class="input" required />
             </div>
-
+            
             <div class="campo-form">
-              <label>Nombre completo:</label>
-              <input type="text" name="nombre" class="input" required />
+              <label>Repetir contraseña:</label>
+              <input type="password" name="repassword" class="input" required />
             </div>
 
+
+
+
             <label class="checkbox-label">
-              <input type="checkbox" name="admin" />
               ¿Es administrador?
+              <input type="checkbox" name="admin" />
+              
             </label>
 
             <button type="submit" class="boton-principal">Registrar</button>
