@@ -8,6 +8,7 @@ import {
   setDoc
 } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
 import { obtenerAños } from './components/consultas.js';
+import { mostrarToast } from './components/toast.js'; 
 
 document.addEventListener('DOMContentLoaded', async () => {
   const formSeleccion = document.getElementById('formSeleccionPublica');
@@ -44,15 +45,30 @@ async function cargarAños() {
   });
 
   selectEvento.addEventListener('change', async () => {
-    selectModalidad.innerHTML = '<option value="">Selecciona modalidad</option>';
-    const snapshot = await getDocs(collection(db, `${selectAnio.value}_eventos/${selectEvento.value}/modalidad`));
-    snapshot.forEach(doc => {
+  selectModalidad.innerHTML = '<option value="">Selecciona modalidad</option>';
+
+  const snapshot = await getDocs(collection(db, `${selectAnio.value}_eventos/${selectEvento.value}/modalidad`));
+  
+  snapshot.forEach(doc => {
+    const data = doc.data();
+    if (data.activo === true) {  // 👈 solo si está activa
       const opt = document.createElement('option');
       opt.value = doc.id;
       opt.textContent = doc.id;
       selectModalidad.appendChild(opt);
-    });
+    }
   });
+
+  // Si no se cargó ninguna modalidad
+  if (selectModalidad.children.length === 1) {
+    const opt = document.createElement('option');
+    opt.value = "";
+    opt.textContent = "No hay modalidades activas";
+    opt.disabled = true;
+    selectModalidad.appendChild(opt);
+  }
+});
+
 
   formSeleccion.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -158,12 +174,15 @@ async function cargarAños() {
       const nuevoId = (ids.length > 0 ? Math.max(...ids) + 1 : 1).toString().padStart(4, "0");
 
       await setDoc(doc(db, ruta, nuevoId), datos);
-      alert("✅ Equipo registrado correctamente con ID " + nuevoId);
+      alert("✅ Equipo registrado correctamente con ID " + nuevoId, "success");
+      setTimeout(() => {
+        window.location.reload();
+      }, 5000); // Recargar la página después de 2 segundos
       formRegistro.reset();
       formRegistro.style.display = "none";
     } catch (err) {
       console.error("Error al registrar equipo:", err);
-      alert("❌ Error al registrar equipo.");
+      alert("❌ Error al registrar equipo.", "error");
     }
   });
   await cargarAños();

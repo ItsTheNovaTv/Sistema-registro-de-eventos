@@ -10,6 +10,6 @@ export function mostrarToast(mensaje, tipo = "success") {
   
     setTimeout(() => {
       toast.remove();
-    }, 4000);
+    }, 5000);
   }
   
