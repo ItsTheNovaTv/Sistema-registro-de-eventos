@@ -29,7 +29,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 });
-/* ESTO ESTA COMENTADO PARA AHORRAR CARGA DE DATOS EN LA PAGINA DE INICIO DURANTE EL DESARROLLO
 // Para cargar el dashboard al iniciar la página
 // Se obtiene el año actual y se carga el resumen del dashboard
 document.addEventListener('DOMContentLoaded', () => {
@@ -114,4 +113,4 @@ window.addEventListener('resize', () => {
   if (window.graficaModalidadesInstance) {
     window.graficaModalidadesInstance.resize();
   }
-});*/
+});

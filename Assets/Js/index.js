@@ -32,7 +32,7 @@ document.addEventListener("DOMContentLoaded", () => {
         mostrarToast(`Bienvenido ${datos.nombre}`, "success");
         
         setTimeout(() => {
-          window.location.href = "./Inicio.html";
+          window.location.href = "/Assets/Pages/Inicio.html";
         }, 1500)
         } else {
         mostrarToast("No se encontraron los datos del usuario en Firestore.", "error");
