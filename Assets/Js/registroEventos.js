@@ -1,7 +1,6 @@
 import { db } from './components/Firebase.js';
-import { doc, setDoc, getDoc, collection, getDocs, deleteDoc} from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
+import { doc, setDoc, getDoc, collection, getDocs, deleteDoc,serverTimestamp,addDoc} from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
 import { obtenerAños } from './components/consultas.js';
-import { registrarBitacora } from "./components/bitacora.js";
 import { mostrarToast } from './components/toast.js';
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -183,6 +182,31 @@ bloques.forEach(bloque => {
         creado_por: sessionStorage.getItem("usuarioId") || "admin"
       });
     }
+
+    // Suponiendo que tienes estas variables disponibles:
+    const uid = sessionStorage.getItem("usuarioId");
+    let nombreUsuario = "Desconocido";
+
+    // Cargar nombre del usuario desde Firestore (opcional)
+    try {
+      const usuarioSnap = await getDoc(doc(db, "usuarios", uid));
+      if (usuarioSnap.exists()) {
+        nombreUsuario = usuarioSnap.data().nombre || "Sin nombre";
+      }
+    } catch (error) {
+      console.warn("No se pudo obtener el nombre del usuario:", error);
+    }
+
+    // Guardar acción en la bitácora
+    await addDoc(collection(db, "bitacora"), {
+      accion: "Registro de evento",
+      nombre: nombreUsuario,
+      usuarioId: uid || "público",
+      detalle: `Evento: ${evento}, Modalidad: ${modalidad}`,
+      ruta: `${anio}_eventos/${evento}/modalidad/${modalidad}`,
+      timestamp: serverTimestamp()
+    });
+
 
     const modalidadRef = doc(db, `${anio}_eventos/${evento}/modalidad/${modalidad}`);
     const modalidadDoc = await getDoc(modalidadRef);

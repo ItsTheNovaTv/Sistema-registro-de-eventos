@@ -5,7 +5,9 @@ import {
   getDocs,
   doc,
   getDoc,
-  setDoc
+  setDoc,
+  serverTimestamp,
+   addDoc,
 } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -151,6 +153,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       const ids = snapshot.docs.map(doc => parseInt(doc.id)).filter(n => !isNaN(n));
       const nuevoId = (ids.length > 0 ? Math.max(...ids) + 1 : 1).toString().padStart(4, "0");
 
+      
       await setDoc(doc(db, ruta, nuevoId), datos);
       alert("✅ Equipo registrado correctamente con ID " + nuevoId);
       formRegistro.reset();
@@ -159,5 +162,32 @@ document.addEventListener('DOMContentLoaded', async () => {
       console.error("Error al registrar equipo:", err);
       alert("❌ Error al registrar equipo.");
     }
+
+// Obtener el UID desde sesión (si existe)
+const uid = sessionStorage.getItem("usuarioId") || "público";
+let nombreUsuario = "Desconocido";
+
+// Obtener el nombre del usuario (si está autenticado)
+if (uid !== "público") {
+  try {
+    const usuarioSnap = await getDoc(doc(db, "usuarios", uid));
+    if (usuarioSnap.exists()) {
+      nombreUsuario = usuarioSnap.data().nombre || "Sin nombre";
+    }
+  } catch (error) {
+    console.warn("No se pudo obtener el nombre del usuario:", error);
+  }
+}
+
+// Guardar en la bitácora
+await addDoc(collection(db, "bitacora"), {
+  accion: "Registro de equipo",
+  nombre: nombreUsuario,
+  usuarioId: uid,
+  detalle: `Equipo: ${datos["Nombre del equipo"] || "Sin nombre"}`,
+  ruta: `${selectAnio.value}_eventos/${selectEvento.value}/modalidad/${selectModalidad.value}/equipos`,
+  timestamp: serverTimestamp()
+});
+
   });
 });
