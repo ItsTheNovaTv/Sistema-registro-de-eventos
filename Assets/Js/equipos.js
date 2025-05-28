@@ -30,24 +30,24 @@ formEditar?.addEventListener("submit", async (e) => {
   const nuevoDoc = {};
 
   campos.forEach((campo, i) => {
- if (campo.tipo === "lista") {
-  nuevoDoc[campo.nombre] = [];
+    if (campo.tipo === "lista") {
+      nuevoDoc[campo.nombre] = [];
 
-  // Campos base definidos por config
-  for (let j = 0; j < campo.cantidad; j++) {
-    const val = formEditar[`campo_${i}_${j}`]?.value || "";
-    nuevoDoc[campo.nombre].push(val);
-  }
+      // Campos base definidos por config
+      for (let j = 0; j < campo.cantidad; j++) {
+        const val = formEditar[`campo_${i}_${j}`]?.value || "";
+        nuevoDoc[campo.nombre].push(val);
+      }
 
-  // Campos extra (excepciones)
- // Capturar todos los inputs adicionales del mismo campo
-const extras = formEditar.querySelectorAll(`[name^="campo_${i}_extra_"]`);
-extras.forEach(extraInput => {
-  const val = extraInput.value.trim();
-  if (val) nuevoDoc[campo.nombre].push(val);
-});
+      // Campos extra (excepciones)
+      // Capturar todos los inputs adicionales del mismo campo
+      const extras = formEditar.querySelectorAll(`[name^="campo_${i}_extra_"]`);
+      extras.forEach(extraInput => {
+        const val = extraInput.value.trim();
+        if (val) nuevoDoc[campo.nombre].push(val);
+      });
 
-}
+    }
     else {
       nuevoDoc[campo.nombre] = formEditar[`campo_${i}`]?.value || "";
     }
@@ -65,7 +65,6 @@ extras.forEach(extraInput => {
     mostrarToast("❌ Error al actualizar equipo.", "error");
   }
 });
-
 
 window.generarConstancia = async function (equipo, evento, modalidad) {
   const integrantes = Array.isArray(equipo.Integrantes) ? equipo.Integrantes : [];
@@ -85,46 +84,53 @@ window.generarConstancia = async function (equipo, evento, modalidad) {
   const plantilla = document.getElementById("plantilla-constancia");
   const zip = new JSZip();
 
+  // Obtener estado del equipo (puede llamarse diferente, ajusta si es necesario)
+  const Participación = (equipo.Participación || "").toLowerCase();
+
+  let mensaje = "Por su valiosa participación";
+  if (Participación.includes("1er lugar")) {
+    mensaje = "Por haber obtenido el primer lugar";
+  } else if (Participación.includes("2do lugar")) {
+    mensaje = "Por haber obtenido el segundo lugar";
+  } else if (Participación.includes("3er lugar")) {
+    mensaje = "Por haber obtenido el tercer lugar";
+  } else if (Participación.includes("participó")) {
+    mensaje = "Por su destacada participación";
+  } else if (Participación.includes("no participó")) {
+    mensaje = "Por haber formado parte del equipo inscrito";
+  }
+
   for (const integrante of integrantes) {
-    // Rellenar texto dinámico en la plantilla
     document.getElementById("nombre-integrante").textContent = integrante;
-    document.getElementById("detalle-evento").innerHTML = `Por su valiosa participación en el ${evento}, modalidad ${modalidad}, organizado por el Instituto Tecnológico Superior de Puerto Peñasco.`;
-    document.getElementById("fecha-actual").textContent = `Puerto Peñasco, Sonora, ${fechaTexto}`;
+    document.getElementById("detalle-evento").innerHTML =
+      `${mensaje} en el evento ${evento}, modalidad ${modalidad}, organizado por el Instituto Tecnológico Superior de Puerto Peñasco.`;
+    document.getElementById("fecha-actual").textContent =
+      `Puerto Peñasco, Sonora, ${fechaTexto}`;
 
     plantilla.style.display = "block";
 
-    // Capturar como imagen
-    const canvas = await html2canvas(plantilla, {
-      scale: 2  // Mejora resolución
-    });
+    const canvas = await html2canvas(plantilla, { scale: 2 });
     const imgData = canvas.toDataURL("image/png");
 
-    // Crear PDF en formato A4 (210x297 mm)
     const { jsPDF } = window.jspdf;
     const pdf = new jsPDF("p", "mm", "a4");
+    pdf.addImage(imgData, "PNG", 0, 0, 210, 297);
 
-    const pdfWidth = 210;
-    const pdfHeight = 297;
-
-    pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
-
-    // Guardar PDF como blob
     const pdfBlob = pdf.output("blob");
     const nombreArchivo = `Constancia_${integrante.replace(/\s+/g, "_")}.pdf`;
-
     zip.file(nombreArchivo, pdfBlob);
   }
 
   plantilla.style.display = "none";
 
-  // Descargar archivo .zip con todas las constancias
-  zip.generateAsync({ type: "blob" }).then(function (content) {
+  zip.generateAsync({ type: "blob" }).then(content => {
     const link = document.createElement("a");
     link.href = URL.createObjectURL(content);
     link.download = `Constancias_${equipo.id}.zip`;
     link.click();
   });
 };
+
 
 document.addEventListener("DOMContentLoaded", async () => {
   const añoSelect = document.getElementById("año-combobox");
