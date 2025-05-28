@@ -1,7 +1,7 @@
 import { db } from './components/Firebase.js';
 import { doc, setDoc, getDoc, collection, getDocs, deleteDoc} from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
 import { obtenerAños } from './components/consultas.js';
-
+import { registrarBitacora } from "./components/bitacora.js";
 import { mostrarToast } from './components/toast.js';
 
 document.addEventListener('DOMContentLoaded', () => {

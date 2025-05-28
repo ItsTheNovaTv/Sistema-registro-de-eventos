@@ -9,6 +9,7 @@ import {
 
 import { obtenerAños, obtenerEventos, obtenerModalidades, obtenerEquipos } from './components/consultas.js';
 
+
 const selectAño = document.getElementById("año-combobox");
 const selectEvento = document.getElementById("evento-combobox");
 const selectModalidad = document.getElementById("modalidad-combobox");

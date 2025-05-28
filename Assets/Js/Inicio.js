@@ -114,3 +114,28 @@ window.addEventListener('resize', () => {
     window.graficaModalidadesInstance.resize();
   }
 });
+
+import { db } from "./components/Firebase.js";
+import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+document.addEventListener("DOMContentLoaded", async () => {
+  const usuarioId = sessionStorage.getItem("usuarioId");
+  if (!usuarioId) return;
+
+  try {
+    const docRef = doc(db, "usuarios", usuarioId);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      const datos = docSnap.data();
+
+      document.getElementById("info-nombre").textContent = datos.nombre || "Sin nombre";
+
+
+    } else {
+      console.warn("⚠️ Usuario no encontrado en Firestore.");
+    }
+  } catch (error) {
+    console.error("Error al obtener datos del usuario:", error);
+  }
+});
